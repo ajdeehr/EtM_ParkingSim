@@ -116,7 +116,7 @@ class Garage(object):
                     continue
 
             #if no more spot availble, random choice
-            if N.random.randint(queueGoingIn.qsize()) == 1:
+            if N.random.randint(queueGoingIn.qsize()) > int(queueGoingIn.maxsize)/4:
                 #leave the garage, enter back to road!
                 vehicle = vehicleLeavingGarage()
 
