@@ -24,8 +24,8 @@ class Model(obj):
 
         self.trafficWeight = trafficWeight
 
-        self.northGarage = Garage("North Garage", 300, 20, 20, 1)
-        self.southGarage = Garage("South Garage", 200, 10, 10, 1)
+        self.northGarage = Garage("North Garage", 300, 20, 20, 0, 1)
+        self.southGarage = Garage("South Garage", 200, 10, 10, 0, 1)
 
         self.campusWayRoad = Road(adjacentGarage=self.southGarage, adjacentGarage2=self.northGarage, trafficWeight = 1)
 
