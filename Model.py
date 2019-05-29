@@ -50,7 +50,7 @@ class Model(object):
     def makeVehicleList(self, list_agents):
         vehicles = []
         curr_agent = 0
-        for i in range(limit):
+        while curr_agent > limit+1:
             #Create a vehicle to add.
             curr_vehicle = Vehicle.Vehicle()
 
