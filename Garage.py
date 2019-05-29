@@ -12,7 +12,7 @@ class ParkingSpot(object):
         #parkingID 
         self.parkingNumber = parkingNumber
 
-        #parkingType, 0 = carpool, 1 = handicapped, 2 = normal
+        #parkingType, 0 = carpool, 1 = handicapped, 2 = normal, 3 = EV
         self.parkingType = parkingType
 
         #state, 0 = free, 1 occupied
@@ -31,12 +31,13 @@ class ParkingSpot(object):
 
 class Garage(object):
 
-    def __init__(self, garageName="Garage1", numberofSpot=300, numberofCarpoolSpot=20, numberofHandicappedSpot=20, trafficWeight=1):
+    def __init__(self, garageName="Garage1", numberofSpot=300, numberofCarpoolSpot=20, numberofHandicappedSpot=20, numberofEVSpot=0, trafficWeight=1):
         self.garageName = garageName
         self.numberofSpot = numberofSpot
         self.numberofCarpoolSpot = numberofCarpoolSpot
         self.numberofHandicappedSpot = numberofHandicappedSpot
-        self.numberofNormalSpot = numberofSpot - numberofCarpoolSpot - numberofHandicappedSpot
+        self.numberofEVSpot = numberofEVSpot
+        self.numberofNormalSpot = numberofSpot - numberofCarpoolSpot - numberofHandicappedSpot - numberofEVSpot
 
 
         self.spotList = initParkingSpaces()
@@ -66,12 +67,17 @@ class Garage(object):
                 aHandicappedSpot = ParkingSpot(parkingNumber=i, parkingType=1)
                 i = i + 1
                 spotList.append(aHandicappedSpot)
-
+                
             for range in (0, numberofNormalSpot):
                 aSpot = ParkingSpot(parkingNumber=i, parkingType=2)
                 i = i + 1
                 spotList.append(aSpot)
-            
+
+            for range in (0, numberofEVSpot):
+                aEVSpot = ParkingSpot(parkingNumber=i, parkingType=3)
+                i = i + 1
+                spotList.append(aEVSpot)
+ 
         return spotList
 
 
@@ -110,7 +116,7 @@ class Garage(object):
                     continue
 
             #if no more spot availble, random choice
-            if N.random.randint(2) == 1:
+            if N.random.randint(queueGoingIn.qsize()) > int(queueGoingIn.maxsize)/4:
                 #leave the garage, enter back to road!
                 vehicle = vehicleLeavingGarage()
 

@@ -28,7 +28,7 @@ class Road(object):
 
     def enterGarage(self):
 
-        while (queueGoingIn.empty() == False):
+        while (queueGoingIn.empty() > int(queueGoingIn.maxsize/4)):
             
             if N.random.randint(2) == 1:
                 #need a traffic weight
