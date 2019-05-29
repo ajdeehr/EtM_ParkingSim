@@ -43,7 +43,7 @@ class Model(obj):
     def agent_init(self):
         credits = N.zeros((0,), dtype='i')
         while (N.size(credits) < limit):
-            a = N.random.normal(15,1.5, 10).astype('i')
+            a = N.random.normal(3,.5, 10).astype('i') * 5
             temp = a[N.where(N.logical_and(a > 0, a < 20))]
             credits = N.concatenate([temp, credits])
         
