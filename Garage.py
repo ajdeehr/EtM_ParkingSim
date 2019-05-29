@@ -40,7 +40,7 @@ class Garage(object):
         self.numberofNormalSpot = numberofSpot - numberofCarpoolSpot - numberofHandicappedSpot - numberofEVSpot
 
 
-        self.spotList = initParkingSpaces()
+        self.spotList = self.initParkingSpaces()
 
         #going in/out lane
         self.queueGoingIn = queue.Queue(maxsize=50)
@@ -56,24 +56,24 @@ class Garage(object):
     def initParkingSpaces(self):
         i = 1
         spotList = []
-        while i < (numberofSpot+1):
+        while i < (self.numberofSpot+1):
 
-            for range in (0, numberofCarpoolSpot):
+            for range in (0, self.numberofCarpoolSpot):
                 aCarpoolSpot = ParkingSpot(parkingNumber=i, parkingType=0)
                 i = i + 1 #increase parkingNumber
                 spotList.append(aCarpoolSpot)
             
-            for range in (0, numberofHandicappedSpot):
+            for range in (0, self.numberofHandicappedSpot):
                 aHandicappedSpot = ParkingSpot(parkingNumber=i, parkingType=1)
                 i = i + 1
                 spotList.append(aHandicappedSpot)
                 
-            for range in (0, numberofNormalSpot):
+            for range in (0, self.numberofNormalSpot):
                 aSpot = ParkingSpot(parkingNumber=i, parkingType=2)
                 i = i + 1
                 spotList.append(aSpot)
 
-            for range in (0, numberofEVSpot):
+            for range in (0, self.numberofEVSpot):
                 aEVSpot = ParkingSpot(parkingNumber=i, parkingType=3)
                 i = i + 1
                 spotList.append(aEVSpot)
@@ -84,43 +84,43 @@ class Garage(object):
 
     #mechanics for leave and enter garage and parking spot
     def vehicleEnterGarage(self, vehicle):
-        queueGoingIn.put(vehicle)
+        self.queueGoingIn.put(vehicle)
 
     def vehicleEnterSpot(self, ParkingSpot):
-        vehicle = queueGoingIn.get()
+        vehicle = self.queueGoingIn.get()
         ParkingSpot.park(vehicle)
     
     def vehicleLeavingSpot(self, ParkingSpot):
         vehicle = ParkingSpot.leave()
-        queueGoingOut.put(vehicle)
+        self.queueGoingOut.put(vehicle)
 
     def vehicleLeavingGarage(self):
-        vehicle = queueGoingOut.get()
+        vehicle = self.queueGoingOut.get()
         return vehicle
 
     def vehicleTurnAround(self):
-        vehicle = queueGoingIn.get()
-        queueGoingIn.put(vehicle)
+        vehicle = self.queueGoingIn.get()
+        self.queueGoingIn.put(vehicle)
 
 
     #find spot
     def findParkingSpot(self):
         
-        while (queueGoingIn.empty() == False):
+        while (self.queueGoingIn.empty() == False):
             
             for spot in self.spotList:
 
                 if (spot.state == 0):
                     #use trafficWeight to wait out the parking process
-                    vehicleEnterSpot(spot)
+                    self.vehicleEnterSpot(spot)
                     continue
 
             #if no more spot availble, random choice
-            if N.random.randint(queueGoingIn.qsize()) > int(queueGoingIn.maxsize)/4:
+            if N.random.randint(self.queueGoingIn.qsize()) > int(self.queueGoingIn.maxsize)/4:
                 #leave the garage, enter back to road!
-                vehicle = vehicleLeavingGarage()
+                vehicle = self.vehicleLeavingGarage()
 
 
             else:
                 #reenter the garage
-                vehicleTurnAround()
+                self.vehicleTurnAround()

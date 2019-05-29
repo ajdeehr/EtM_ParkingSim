@@ -41,10 +41,10 @@ class Vehicle(object):
 
     def is_single_passenger(self):
         '''Returns if the car can accept multiple agents'''
-        if self.type == VEHICLE_TYPE_CAR or self.type == VEHICLE_TYPE_BIKE:
-            return true
-        else
-            return false
+        if self.type == C.VEHICLE_TYPE_CAR or self.type == C.VEHICLE_TYPE_BIKE:
+            return True
+        else:
+            return False
 
     def park(self):
         '''Sets the status to parked'''
