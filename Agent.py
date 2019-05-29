@@ -34,6 +34,12 @@ class Agent(object):
         self.total_week_hours = 0
         self.expected_week_hours = 0
 
+        #added after first milestne meetup (wed 5/29)
+        self.parking_spot_ID = -1
+        self.lot_ID = "None"
+        self.enter_time = -1
+
+
     def update(self, currentTime):
         addedTime = TD(hours = self.stay_hours)
         if (self.time_arrived + addedTime) is currentTime:

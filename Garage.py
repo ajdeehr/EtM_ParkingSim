@@ -40,7 +40,7 @@ class Garage(object):
         self.numberofNormalSpot = numberofSpot - numberofCarpoolSpot - numberofHandicappedSpot - numberofEVSpot
 
 
-        self.spotList = self.initParkingSpaces()
+        self.spotDict, self.spotPriorityQueue = self.initParkingSpaces()
 
         #going in/out lane
         self.queueGoingIn = queue.Queue(maxsize=50)
@@ -55,30 +55,35 @@ class Garage(object):
 
     def initParkingSpaces(self):
         i = 1
-        spotList = []
+        spotDict = {}
+        spotPriorityQueue = queue.PriorityQueue()
         while i < (self.numberofSpot+1):
 
             for range in (0, self.numberofCarpoolSpot):
                 aCarpoolSpot = ParkingSpot(parkingNumber=i, parkingType=0)
                 i = i + 1 #increase parkingNumber
-                spotList.append(aCarpoolSpot)
+                spotDict[i] = aCarpoolSpot
+                spotPriorityQueue.put(i, aCarpoolSpot)
             
             for range in (0, self.numberofHandicappedSpot):
                 aHandicappedSpot = ParkingSpot(parkingNumber=i, parkingType=1)
                 i = i + 1
-                spotList.append(aHandicappedSpot)
-                
-            for range in (0, self.numberofNormalSpot):
-                aSpot = ParkingSpot(parkingNumber=i, parkingType=2)
-                i = i + 1
-                spotList.append(aSpot)
+                spotDict[i] = aHandicappedSpot
+                spotPriorityQueue.put(i, aHandicappedSpot)
 
             for range in (0, self.numberofEVSpot):
                 aEVSpot = ParkingSpot(parkingNumber=i, parkingType=3)
                 i = i + 1
-                spotList.append(aEVSpot)
+                spotDict[i] = aEVSpot
+                spotPriorityQueue.put(i, aEVSpot)
  
-        return spotList
+            for range in (0, self.numberofNormalSpot):
+                aSpot = ParkingSpot(parkingNumber=i, parkingType=2)
+                i = i + 1
+                spotDict[i] = aSpot
+                spotPriorityQueue.put(i, aSpot)
+
+        return spotDict, spotPriorityQueue
 
 
 
