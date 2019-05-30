@@ -1,54 +1,42 @@
 
 import numpy as N
 import Constants as C
-from datetime import timedelta as TD
-from datetime import datetime as DT
 
 class Agent(object):
+    curr_agent_id = 0
+
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        string = "   ID = %s\nAgent = %s\n" \
-                % (self.agent_ID, Agent.agent_type_as_str(self.agent_type))
-        if self.agent_type is 0:
-            string += "Credits = %s\nStayhours = %s\n" \
-                % (self.credits,self.stay_hours )
-        # if self.agent_type is 1:
-        #     pass
+        string = "Agent: agent_id == " + str(self.agent_id) + "\n"
+        string += "Agent: stay_hours == " + str(self.stay_hours) + "\n"
+        string += "Agent: time_arrived == " + str(self.time_arrived) + "\n"
+        string += "Agent: parking_spot_id == " str(self.parking_spot_id) + "\n"
+        string += "Agent: lot_id == " + self.lot_id + "\n"
 
         return string
-        # self.credits = credits
-        # self.agent_type =         self.stay_hours = stayhours
-        # self.time_arrived = DT(2019, 5, 20, ta[0], ta[1])
-        # self.agent_ID = agent_id
-        # self.total_week_hours = 0
-        # self.expected_week_hours = 0
 
-    def __init__(self, agenttype=0, stayhours = 8, creditshours = 0, ta = (8, 45), agent_id = 0):
-        self.credits = creditshours
-        self.agent_type = agenttype
+    def __init__(self, stayhours = 8):
+        '''Default constructor which creates the object with the hours staying'''
+
+        #Set the number of hours the student is staying.
         self.stay_hours = stayhours
-        self.time_arrived = DT(2019, 5, 20, ta[0], ta[1])
-        self.agent_ID = agent_id
-        self.total_week_hours = 0
-        self.expected_week_hours = 0
 
-        #added after first milestne meetup (wed 5/29)
-        self.parking_spot_ID = -1
-        self.lot_ID = "None"
-        self.enter_time = -1
+        #Store and increment the agent id.
+        self.agent_id = curr_agent_id
+        curr_agent_id += 1
 
+        #Added after first milestne meetup (wed 5/29)
+        self.parking_spot_id = -1
+        self.lot_id = "None"
 
-    def update(self, currentTime):
-        addedTime = TD(hours = self.stay_hours)
-        if (self.time_arrived + addedTime) is currentTime:
-            pass
+    def time_start(self, curr_time):
+        '''Save the current time to calculate waiting times.
+        Will be called once when arrived to gate, and another time when leaving from school'''
+        self.start_time = curr_time
 
-    def agent_type_as_str(ag_type):
-        if ag_type is C.AGENT_STUDENT:
-            return "Student"
-        elif ag_type is C.AGENT_FACULTY:
-            return "Faculty"
-        elif ag_type is C.AGENT_STAFF:
-            return "Staff"
+    def time_spent(self, curr_time):
+        '''Return the time spent since start_time. 
+        Will be called once when arrived to school, and another time when leaving from gate'''
+        return curr_time - self.start_time 
