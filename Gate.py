@@ -43,10 +43,8 @@ class Gate(object):
 
 
 
-    def vehicle_init(self, rate, list_agents):
-        vehicles = []
-        curr_agent = 0
-        while curr_agent > rate+1:
+    def vehicle_gen(self, rate):
+        while curr_agent > rate + 1:
             #Create a vehicle to add.
             curr_vehicle = Vehicle.Vehicle()
 
@@ -56,24 +54,7 @@ class Gate(object):
                 curr_agent += 1
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(R.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
-                    curr_vehicle.add_agent(list_agents[curr_agent])
+                    curr_vehicle.add_agent(Agent())
                     curr_agent += 1
-            vehicles.append(curr_vehicle)
-        return vehicles
 
-        for i in range(len(vehicles)):
-            print(vehicles[i])
-        
-
-
-
-    def generate_car(self, rate):
-
-        self.agents_list = agent_init(rate) #has to do something with rate
-        self.vehicle_list = vehicle_init(rate, agents_list) #has to do something with rate
-
-        for vehicle in vehicle_list:
-            
-            #capture time somehow
-            
-            queueGoingIn.put(vehicle)
+            queueGoingIn.put(curr_vehicle)
