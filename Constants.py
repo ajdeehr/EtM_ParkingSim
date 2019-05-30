@@ -21,4 +21,9 @@ AGENT_STAFF = 2
 MIN_PASSENGERS = 1
 MAX_PASSENGERS = 3
 
+
+#Constants for data sampling in Data.py
+PLUS_MINUS = 30
+
+
 #Other Variables Go here.
