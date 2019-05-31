@@ -20,8 +20,13 @@ class Agent(object):
     def __init__(self, stayhours = 8):
         '''Default constructor which creates the object with the hours staying'''
 
+        #This generate a number of a norm distro with mean 15 and sigma 5
+        self.credits = N.floor(5 * N.random.randn() + 15)
+
         #Set the number of hours the student is staying.
-        self.stay_hours = stayhours
+        #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)
+        #C.MAX_NO_DAYS_SCHOOL = 5 (5 days of school in a week)
+        self.stay_hours = N.ceil(stayhours / N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1))
 
         #Store and increment the agent id.
         self.agent_id = curr_agent_id
