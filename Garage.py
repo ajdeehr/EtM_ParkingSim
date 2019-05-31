@@ -4,6 +4,8 @@ import numpy as N
 import queue
 
 import Road
+import Vehicle
+import School
 
 class ParkingSpot(object):
 
@@ -12,7 +14,10 @@ class ParkingSpot(object):
         #parkingID 
         self.parkingNumber = parkingNumber
 
-        #parkingType, 0 = carpool, 1 = handicapped, 2 = normal, 3 = EV
+        # VEHICLE_TYPE_CAR = 0     #Represent the types of the vehicle.
+        # VEHICLE_TYPE_BIKE = 1
+        # VEHICLE_TYPE_HCAP = 2
+        # VEHICLE_TYPE_CARPOOL = 3
         self.parkingType = parkingType
 
         #state, 0 = free, 1 occupied
@@ -26,6 +31,7 @@ class ParkingSpot(object):
 
     def leave(self):
         leavingVehicle = self.vehicleOccupied
+        self.vehicleOccupied = None
         return leavingVehicle
 
 
@@ -41,6 +47,7 @@ class Garage(object):
 
 
         self.spotDict, self.spotPriorityQueue = self.initParkingSpaces()
+        self.spotList = []
 
         #going in/out lane
         self.queueGoingIn = queue.Queue(maxsize=50)
@@ -62,26 +69,33 @@ class Garage(object):
             for range in (0, self.numberofCarpoolSpot):
                 aCarpoolSpot = ParkingSpot(parkingNumber=i, parkingType=0)
                 i = i + 1 #increase parkingNumber
-                spotDict[i] = aCarpoolSpot
-                spotPriorityQueue.put(i, aCarpoolSpot)
+                spotList.append(aCarpoolSpot)
+                # spotDict[i] = aCarpoolSpot
+                # spotPriorityQueue.put(i, aCarpoolSpot)
             
             for range in (0, self.numberofHandicappedSpot):
                 aHandicappedSpot = ParkingSpot(parkingNumber=i, parkingType=1)
                 i = i + 1
-                spotDict[i] = aHandicappedSpot
-                spotPriorityQueue.put(i, aHandicappedSpot)
+                spotList.append(aHandicappedSpot)
+
+                # spotDict[i] = aHandicappedSpot
+                # spotPriorityQueue.put(i, aHandicappedSpot)
 
             for range in (0, self.numberofEVSpot):
                 aEVSpot = ParkingSpot(parkingNumber=i, parkingType=3)
                 i = i + 1
-                spotDict[i] = aEVSpot
-                spotPriorityQueue.put(i, aEVSpot)
+                spotList.append(aEVSpot)
+
+                # spotDict[i] = aEVSpot
+                # spotPriorityQueue.put(i, aEVSpot)
  
             for range in (0, self.numberofNormalSpot):
                 aSpot = ParkingSpot(parkingNumber=i, parkingType=2)
                 i = i + 1
-                spotDict[i] = aSpot
-                spotPriorityQueue.put(i, aSpot)
+                spotList.append(aSpot)
+
+                # spotDict[i] = aSpot
+                # spotPriorityQueue.put(i, aSpot)
 
         return spotDict, spotPriorityQueue
 
@@ -91,8 +105,8 @@ class Garage(object):
     def vehicleEnterGarage(self, vehicle):
         self.queueGoingIn.put(vehicle)
 
-    def vehicleEnterSpot(self, ParkingSpot):
-        vehicle = self.queueGoingIn.get()
+    def vehicleEnterSpot(self, ParkingSpot, vehicle):
+        #vehicle = self.queueGoingIn.get()
         ParkingSpot.park(vehicle)
     
     def vehicleLeavingSpot(self, ParkingSpot):
@@ -109,16 +123,32 @@ class Garage(object):
 
 
     #find spot
-    def findParkingSpot(self):
+    def findParkingSpot(self, vehicle):
         
         while (self.queueGoingIn.empty() == False):
             
             for spot in self.spotList:
-
                 if (spot.state == 0):
+
+                    if (vehicle.type == spot.parkingType):
                     #use trafficWeight to wait out the parking process
-                    self.vehicleEnterSpot(spot)
-                    continue
+                        self.vehicleEnterSpot(spot, vehicle)
+
+                        #make agents remember where they parked
+                        for agent in vehicle.agents:
+                            agent.parking_spot_id = spot.parkingNumber
+                            agent.lot_id = garageName
+
+                        #make agents go to School
+                        while len(vehicle.agents) != 0:
+                            School.go_to_school(vehicle.agents.pop())
+
+                        #continue through the loop    
+                        continue
+
+
+                    else:
+                        continue
 
             #if no more spot availble, random choice
             if N.random.randint(self.queueGoingIn.qsize()) > int(self.queueGoingIn.maxsize)/4:
