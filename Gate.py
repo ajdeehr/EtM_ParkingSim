@@ -20,41 +20,34 @@ class Gate(object):
         #added after first milestne meetup (wed 5/29)
         self.agents_list = []
         self.vehicle_list = []
-        generate_car() 
+        self.vehicle_gen(50)
 
 
 
-    def agent_init(self, rate):
-        credits = N.zeros((0,), dtype='i')
-        while (N.size(credits) < rate):
-            a = N.random.normal(3,.5, 10).astype('i') * 5
-            temp = a[N.where(N.logical_and(a > 0, a <= 20))]
-            credits = N.concatenate([temp, credits])
+    def vehicle_gen(self, no_cars):
 
-        agents = N.ndarray((rate,), dtype=Agent.Agent)
-        for i in range(rate):
-            print("Student {:2}: Credits {:2}".format(i + 1, credits[i]))
-            agents[i] = Agent.Agent(agenttype=C.AGENT_STUDENT,creditshours=credits[i], \
-                            stayhours = (credits[i]//5) * 2, \
-                            agent_id = i, ta = (8,30) )
+        curr_no_car = 0
 
-        return agents
-
-
-
-
-    def vehicle_gen(self, rate):
-        while curr_agent > rate + 1:
+        while curr_no_car < no_cars:
             #Create a vehicle to add.
             curr_vehicle = Vehicle.Vehicle()
 
+            cur_no_agent = 0
+
             #Add one passenger of standard or bike.
             if curr_vehicle.is_single_passenger():
-                curr_vehicle.add_agent(list_agents[curr_agent])
-                curr_agent += 1
-            else:   #Add multiple passengers to vehicle if not standard vehicle.
-                for j in range(R.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
-                    curr_vehicle.add_agent(Agent())
-                    curr_agent += 1
+                curr_vehicle.add_agent(Agent())
+                curr_no_agent = cur_no_agent + 1
+                #update number of agent
+                curr_vehicle.num_of_agents = curr_no_agent
 
-            queueGoingIn.put(curr_vehicle)
+            else:   #Add multiple passengers to vehicle if not standard vehicle.
+                for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
+                    curr_vehicle.add_agent(Agent())
+                    curr_no_agent = cur_no_agent + 1
+                #update number of agent
+                curr_vehicle.num_of_agents = curr_no_agent
+
+
+            self.queueGoingIn.put(curr_vehicle)
+            curr_no_car = curr_no_car + 1

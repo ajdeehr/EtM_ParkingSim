@@ -36,7 +36,7 @@ class Vehicle(object):
         self.agents = set()
 
         #added after first milestne meetup (wed 5/29)
-        self.num_of_passengers = -1
+        self.num_of_agents = 0
 
     def add_agent(self, agent):
         '''Adds a new agent to this car'''

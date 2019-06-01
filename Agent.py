@@ -12,12 +12,13 @@ class Agent(object):
         string = "Agent: agent_id == " + str(self.agent_id) + "\n"
         string += "Agent: stay_hours == " + str(self.stay_hours) + "\n"
         string += "Agent: time_arrived == " + str(self.time_arrived) + "\n"
-        string += "Agent: parking_spot_id == " str(self.parking_spot_id) + "\n"
+        string += "Agent: parking_spot_id == " + str(self.parking_spot_id) + "\n"
         string += "Agent: lot_id == " + self.lot_id + "\n"
 
         return string
 
     def __init__(self, stayhours = 8):
+        global curr_agent_id
         '''Default constructor which creates the object with the hours staying'''
 
         #This generate a number of a norm distro with mean 15 and sigma 5
@@ -27,6 +28,7 @@ class Agent(object):
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)
         #C.MAX_NO_DAYS_SCHOOL = 5 (5 days of school in a week)
         self.stay_hours = N.ceil(self.credits / N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1))
+
 
         #Store and increment the agent id.
         self.agent_id = curr_agent_id
