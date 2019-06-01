@@ -17,4 +17,4 @@ class School(object):
 
     
     def go_to_school(agent):
-        agent_list.append(agent)
+        self.agent_list.append(agent)

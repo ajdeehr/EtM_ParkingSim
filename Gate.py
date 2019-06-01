@@ -20,7 +20,7 @@ class Gate(object):
         #added after first milestne meetup (wed 5/29)
         self.agents_list = []
         self.vehicle_list = []
-        vehicle_gen()
+        self.vehicle_gen(50)
 
 
 
@@ -49,5 +49,5 @@ class Gate(object):
                 curr_vehicle.num_of_agents = curr_no_agent
 
 
-            queueGoingIn.put(curr_vehicle)
+            self.queueGoingIn.put(curr_vehicle)
             curr_no_car = curr_no_car + 1
