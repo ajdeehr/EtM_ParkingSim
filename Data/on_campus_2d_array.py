@@ -155,13 +155,15 @@ def on_campus_arr(filename):
             else:
                 continue
                 
+    on_campus = on_campus.astype(int)           
+                    
+    '''    
+        with open("2DonCampus.csv","w+") as my_csv:
+            csvWriter = csv.writer(my_csv,delimiter=',')
+            csvWriter.writerows(on_campus)
+
+        with open("fileReadableSchedule.csv","w+") as my_csv:
+            csvWriter = csv.writer(my_csv,delimiter=',')
+            csvWriter.writerows(final_schedule)
+    '''
     return on_campus
-'''    
-    with open("2DonCampus.csv","w+") as my_csv:
-        csvWriter = csv.writer(my_csv,delimiter=',')
-        csvWriter.writerows(on_campus)
-    
-    with open("fileReadableSchedule.csv","w+") as my_csv:
-        csvWriter = csv.writer(my_csv,delimiter=',')
-        csvWriter.writerows(final_schedule)
-'''
