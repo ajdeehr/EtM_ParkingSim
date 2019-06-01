@@ -5,9 +5,19 @@ import Agent
 import Vehicle
 import Road
 import Garage
+import Gate
+import School
 import Constants as C
+import visualize as V
+import matplotlib.pyplot as plt
+
+import importlib
+
+importlib.reload(V)
+importlib.reload(Road)
 
 limit = 30
+
 
 class Model(object):
 
@@ -15,62 +25,122 @@ class Model(object):
 
         self.trafficWeight = trafficWeight
 
-        self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
-        self.southGarage = Garage.Garage("South Garage", 200, 10, 10, 0, 1)
+        # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
+        self.southGarage = Garage.Garage("South Garage", numberofSpot=771,
+                                         numberofCarpoolSpot=23,
+                                         numberofHandicappedSpot=20,
+                                         numberofEVSpot=12, trafficWeight=1)
 
-        self.campusWayRoad = Road.Road(adjacentGarage=self.southGarage, adjacentGarage2=self.northGarage, trafficWeight = 1)
+        self.campusWayRoad = Road.Road(adjacentGarage=self.southGarage,
+                                       adjacentGarage2=None, trafficWeight=1)
 
-        self.northGarage.outsideRoad = self.campusWayRoad
+        # self.northGarage.outsideRoad = self.campusWayRoad
         self.southGarage.outsideRoad = self.campusWayRoad
 
         self.numberGarage = 2
 
-        self.agents_list = self.agent_init()
+        # self.gate = Gate.Gate()
 
-        self.vehicleList = self.makeVehicleList(self.agents_list)
+        self.school = School.School()
 
+        self.num_days = 30
+        self.dt = 0.15
 
+        self.plot_figure = None
+        self.plot_axis = None
+        self.plot_image = None
 
-    def agent_init(self):
-        credits = N.zeros((0,), dtype='i')
-        while (N.size(credits) < limit):
-            a = N.random.normal(3,.5, 10).astype('i') * 5
-            temp = a[N.where(N.logical_and(a > 0, a <= 20))]
-            credits = N.concatenate([temp, credits])
+    def run_session(self, num_days=30):
 
-        agents = N.ndarray((limit,), dtype=Agent.Agent)
-        for i in range(limit):
-            print("Student {:2}: Credits {:2}".format(i + 1, credits[i]))
-            agents[i] = Agent.Agent(agenttype=C.AGENT_STUDENT,creditshours=credits[i], \
-                            stayhours = (credits[i]//5) * 2, \
-                            agent_id = i, ta = (8,30) )
+        minute_in_a_day = 1440
+        no_steps = minute_in_a_day * num_days
 
-        return agents
+        for self.step in range(1, no_steps + 1):
 
-    def makeVehicleList(self, list_agents):
-        vehicles = []
-        curr_agent = 0
-        while curr_agent > limit+1:
-            #Create a vehicle to add.
-            curr_vehicle = Vehicle.Vehicle()
+            # generate vehicle and agents in vehicle
+            # every 30 mins
+            if (self.step % 30 == 0):
+                self.gate.vehicle_gen(400)  # 400 is just place holder
 
-            #Add one passenger of standard or bike.
-            if curr_vehicle.is_single_passenger():
-                curr_vehicle.add_agent(list_agents[curr_agent])
-                curr_agent += 1
-            else:   #Add multiple passengers to vehicle if not standard vehicle.
-                for j in range(R.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
-                    curr_vehicle.add_agent(list_agents[curr_agent])
-                    curr_agent += 1
-            vehicles.append(curr_vehicle)
-        return vehicles
+            # need to record starttime for each vehicle's agent in the set
 
-        for i in range(len(vehicles)):
-            print(vehicles[i])
+            # added to park spot
 
+            # enter road
+            if (self.step % 2 == 0):  # every ~2 mins
+                cur_vehicle = self.gate.queueGoingIn.get()
+
+                self.campusWayRoad.queueGoingIn.put(cur_vehicle)
+
+                cur_vehicle = self.campusWayRoad.queueGoingIn.get()
+
+            # enter garage
+            if (self.step % 4 == 0):  # every ~4 mins
+                self.southGarage.vehicleEnterGarage(cur_vehicle)
+
+                cur_vehicle = self.southGarage.queueGoingIn.get()
+                self.southGarage.findParkingSpot(cur_vehicle)
+
+                # need to record spenttime for each vehicle's agent in the set
+
+            # checking when is time to leave
+            for agent in self.school.agent_list:
+
+                if (agent.stay_hours * 60 == self.step):
+                    # move to lot
+                    # need to record starttime for each vehicle's agent in the set
+
+                    self.school.move_to_lot(agent)  # need to make this method
+                    self.school.agent_list.remove(agent)
+
+            # check if all agents at the car yet
+            for spot in self.southGarage.spotList:
+
+                if (spot.vehicleOccupied.num_of_agents == len(
+                        spot.vehicleOccupied.agents)):
+                    # need to record leaving time
+                    # ready to move out
+                    self.southGarage.vehicleLeavingSpot(spot)
+
+            # leaving garage
+            cur_vehicle = self.southGarage.vehicleLeavingGarage()
+
+            # enter road
+            self.campusWayRoad.queueGoingOut.put(cur_vehicle)
+
+            # leaving road
+            cur_vehicle = self.campusWayRoad.queueGoingOut.get()
+
+            # enter gate
+            self.gate.queueGoingOut.put(cur_vehicle)
+
+            # need to record spenttime for each vehicle's agent in the set
+
+    def run_session_plot_out(self, num_days=30):
+
+        minute_in_a_day = 1440
+        no_steps = minute_in_a_day * num_days
+
+        for self.step in range(1, no_steps + 1):
+
+            if self.step is 1:
+                plt.ion()
+                self.plot_figure, self.plot_axis, self.plot_image = \
+                    V.plot_campus(self)
+                # self.plot_figure, self.plot_axis = V.plot_garage(self)
+                # plt.show()
+
+            else:
+                # pass
+                self.plot_figure, self.plot_axis, self.plot_image = \
+                    V.plot_campus(self, use_obj=(self.plot_figure, self.plot_axis, self.plot_image))
+                
+            plt.pause(.001)
 
 
 def main():
     model = Model()
-    
+    model.run_session_plot_out(num_days=30)
+
+
 main()

@@ -140,9 +140,9 @@ def on_campus_arr(filename):
     #            print('M')
                 
             elif row[0][day] == 'T':
-                if day < len(row[0])-1:
-                    if row[0][day+1] == 'h':
-                        save2arr(3,row[1],row[2],on_campus,row[-1])
+                if day < len(row[0])-1 and row[0][day+1] == 'h':
+#                    if row[0][day+1] == 'h':
+                    save2arr(3,row[1],row[2],on_campus,row[-1])
                 else:
                     save2arr(1,row[1],row[2],on_campus,row[-1])
             
