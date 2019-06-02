@@ -36,14 +36,14 @@ class Gate(object):
 
             #Add one passenger of standard or bike.
             if curr_vehicle.is_single_passenger():
-                curr_vehicle.add_agent(Agent())
+                curr_vehicle.add_agent(Agent.Agent())
                 curr_no_agent = cur_no_agent + 1
                 #update number of agent
                 curr_vehicle.num_of_agents = curr_no_agent
 
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
-                    curr_vehicle.add_agent(Agent())
+                    curr_vehicle.add_agent(Agent.Agent())
                     curr_no_agent = cur_no_agent + 1
                 #update number of agent
                 curr_vehicle.num_of_agents = curr_no_agent
