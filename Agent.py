@@ -18,8 +18,9 @@ class Agent(object):
         return string
 
     def __init__(self, stayhours = 8):
-        global curr_agent_id
         '''Default constructor which creates the object with the hours staying'''
+
+        global curr_agent_id
 
         #This generate a number of a norm distro with mean 15 and sigma 5
         self.credits = N.floor(5 * N.random.randn() + 15)
@@ -45,6 +46,11 @@ class Agent(object):
         self.start_time = curr_time
 
     def time_spent(self, curr_time):
-        '''Return the time spent since start_time. 
+        '''Return the time spent since start_time.
         Will be called once when arrived to school, and another time when leaving from gate'''
-        return curr_time - self.start_time 
+        return curr_time - self.start_time
+
+    def time_leaving_school(self, arrival_time):
+        '''A method which returns the time step which the agent is supposed to
+        leave the school based on the arrival time.'''
+        return arrival_time + self.stay_hours

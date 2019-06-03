@@ -1,6 +1,9 @@
 import numpy as N
 import queue
 
+# Ardalan Ahanchi
+# June 2, 2019
+
 class Road(object):
     """Create a road object which holds the cars for the weight amount of time.
     """
