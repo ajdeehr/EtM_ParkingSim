@@ -1,55 +1,60 @@
-
-
 import numpy as N
 import queue
 
-
-import Garage
-import Gate
-
-
 class Road(object):
-    """Create a road
-
+    """Create a road object which holds the cars for the weight amount of time.
     """
 
-    def __init__(self, adjacentGarage=None, adjacentGarage2=None, adjacentGate=None, trafficWeight=1):
-        self.length = 3    # depends on how long we want the road to be
-        self.width = 3*16   # depends on how long we want the road to be
-        self.adjacentGarage = adjacentGarage
-        self.adjacentGarage2 = adjacentGarage2
-        self.adjacentGate = adjacentGate
+    def __init__(self, lanesin = 1, lanesout = 1, min_t_to_pass = 3):
+        """ Default constructor, it holds lanes_in and lanes_out so the calling
+        object can keep track of how many times it needs to call enter, arrive,
+        leave, or exit. Additionally, min_t_to_pass keeps track of the minimum
+        timesteps which are required to pass the road (Related to length) """
 
-        self.vehicleList = []
+        self.q_going_in = []      #Used lists instead of queue to allow peeking.
+        self.q_going_out = []
 
-        self.queueGoingIn = queue.Queue(maxsize=200)
-        self.queueGoingOut = queue.Queue(maxsize=200)
+        self.lanes_in = lanesin   #Track this for external objects.
+        self.lanes_out = lanesout
 
-        self.trafficWeight = trafficWeight
+    def enter_road(self, vehicle, curr_t):
+        """ A method for adding the vehicle to the road. It specifically is
+        called when the vehicle arrives in the road and before reaching school"""
+        self.q_going_in.append((vehicle, curr_t))
 
-    def enterRoad(self):
-        vehicle = self.adjacentGate.queueGoingIn.get()
-        self.queueGoingIn.put(vehicle)
-        
-    def leaveRoad(self):
-        vehicle = self.queueGoingInget()
-        self.adjacentGate.queueGoingOut.put(vehicle)
-    
-    def leaveGarage(self):
-        vehicle = self.adjacentGarage.vehicleLeavingGarage()
-        self.queueGoingOut.put(vehicle)
+    def arrive_garage(self, curr_t):
+        """ A method which returns the vehicle which has arrived to garage. If
+        No vehicle is ready to arrive (To Garage), it just returns None """
 
-    def enterGarage(self):
+        #If there are no vehicles in the road, return None.
+        if len(self.q_going_in) == 0:
+            return None
 
-        while (self.queueGoingIn.empty() > int(self.queueGoingIn.maxsize/4)):
-            
-            if N.random.randint(2) == 1:
-                #need a traffic weight
-                vehicle = self.queueGoingIn.get()
-                self.adjacentGarage.vehicleEnterGarage(vehicle)
-                continue
-            else:
-                #need a traffic weight
-                vehicle = self.queueGoingIn.get()
-                self.adjacentGarage2.vehicleEnterGarage(vehicle)
-                continue
+        #If the time passed since enterance is less than min_t_to_pass return None.
+        elif curr_t - self.q_going_in[0][1] >= self.min_t_to_pass:
+            return None
+
+        #If vehicle is available to exit to the parking lot, remove and return it.
+        else:
+            return (self.q_going_in.pop(0))[0]
+
+    def leave_garage(self, vehicle, curr_t):
+        """A method which is called when the vehicle is done parking and is trying
+        to enter the road in order to leave"""
+        self.q_going_out.append((vehicle, curr_t))
+
+    def exit_road(self):
+        """ A method which returns the vehicle which has arrived to gate. If
+        No vehicle is ready to exit (To Gate), it just returns None """
+
+        #If there are no vehicles in the road, return None.
+        if len(self.q_going_out) == 0:
+            return None
+
+        #If the time passed since leaving garage is less than min_t_to_pass return None.
+        elif curr_t - self.q_going_out[0][1] >= self.min_t_to_pass:
+            return None
+
+        #If vehicle is available to exit to the gate, remove and return it.
+        else:
+            return (self.q_going_out.pop(0))[0]
