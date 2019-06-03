@@ -1,6 +1,6 @@
 #Student data from PDF
-FTE_2016 = 8,217  # Full time student Fall 2016
-FTE_2018 = 7,731  # Full time student Fall 2018
+FTE_2016 = 8217  # Full time student Fall 2016
+FTE_2018 = 7731  # Full time student Fall 2018
 FTE_AVG = int((FTE_2016 + FTE_2018)/2)
 
 # Student who drives along
@@ -19,11 +19,11 @@ TOTAL_STUDENT_CAR = int(FTE_AVG * (DRIVE_ALONE_AVG + CARPOOL_AVG))
 # Other personnel
 STAFF_16 = 329
 STAFF_18 = 371
-STAFF_AVG = int((intSTAFF_16 + STAFF_16)/2)
+STAFF_AVG = int((STAFF_16 + STAFF_18)/2)
 
 FACULTY_16 = 360
 FACULTY_18 = 357
-FACULTY_AVG = int((FACULTY_16 + FACULTY_16) /2)
+FACULTY_AVG = int((FACULTY_16 + FACULTY_18) /2)
 
 TOTAL_CAR = TOTAL_STUDENT_CAR + FACULTY_AVG + STAFF_AVG
 
@@ -58,4 +58,12 @@ MAX_PASSENGERS = 3
 # Constants for data sampling in Data.py
 PLUS_MINUS = 30
 
-# Other Variables Go here.
+#Dataset Constants
+DATA_FILE_NAME = "./Data/2DonCampus.csv"
+DATA_TIME_STEP = 15
+
+#Simulation Variables
+TIME_STEP = 1       #Default simulation time step (1 Minute by default).
+
+#Dictionary of days to allow easy access to days.
+DAYS = { "Mon":0, "Tue":1, "Wed":2, "Thu":3, "Fri":4 }

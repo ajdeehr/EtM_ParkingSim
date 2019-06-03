@@ -25,7 +25,7 @@ class Model(object):
     def __init__(self, dt=0.25, trafficWeight=1):
 
         self.trafficWeight = trafficWeight
-        
+
         self.gate = Gate.Gate()
 
         # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
@@ -35,7 +35,7 @@ class Model(object):
                                          numberofEVSpot=12, trafficWeight=1)
 
         self.campusWayRoad = Road.Road(adjacentGarage=self.southGarage,
-                                       adjacentGarage2=None, 
+                                       adjacentGarage2=None,
                                        adjacentGate = self.gate, trafficWeight=1)
 
         # self.northGarage.outsideRoad = self.campusWayRoad
@@ -43,7 +43,7 @@ class Model(object):
 
         self.numberGarage = 2
 
-        
+
 
         self.school = School.School()
 
@@ -65,7 +65,7 @@ class Model(object):
             # every 15 mins
             if (self.step % 15 == 0):
                 self.gate.estimate_vehicle(self.step / 15, N.random.randint(0,4)) #every 15 minute, estimate incoming car, days are random(mon-fri) for now
-                self.gate.vehicle_gen()
+                self.gate.vehicle_gen(self.step)
 
             # need to record starttime for each vehicle's agent in the set
 
@@ -134,19 +134,19 @@ class Model(object):
                 print("car gen")
                 self.gate.vehicle_gen(5)  # 400 is just place holder
 
-            
+
             # need to record spenttime for each vehicle's agent in the set
             if self.step is 1:
                 agent = Agent.Agent()
                 print(agent)
                 vehicle = Vehicle.Vehicle()
                 vehicle.add_agent(agent)
-                
+
                 self.southGarage.vehicleEnterSpot(self.southGarage.spotDict["666"], vehicle)
-                
-                
-                
-            
+
+
+
+
             if self.step is 1:
                 plt.ion()
                 self.plot_figure, self.plot_axis, self.plot_image = \
@@ -158,7 +158,7 @@ class Model(object):
                 # pass
                 self.plot_figure, self.plot_axis, self.plot_image = \
                     V.plot_campus(self, use_obj=(self.plot_figure, self.plot_axis, self.plot_image))
-                
+
             plt.pause(.001)
 
 
