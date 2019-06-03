@@ -7,6 +7,9 @@ import Road
 import Garage
 import Gate
 import School
+
+import Data
+
 import Constants as C
 import visualize as V
 import matplotlib.pyplot as plt
@@ -15,8 +18,6 @@ import importlib
 
 importlib.reload(V)
 importlib.reload(Agent)
-
-limit = 30
 
 
 class Model(object):
@@ -61,9 +62,10 @@ class Model(object):
         for self.step in range(1, no_steps + 1):
 
             # generate vehicle and agents in vehicle
-            # every 30 mins
-            if (self.step % 30 == 0):
-                self.gate.vehicle_gen(400)  # 400 is just place holder
+            # every 15 mins
+            if (self.step % 15 == 0):
+                self.gate.estimate_vehicle(self.step / 15, N.random.randint(0,4)) #every 15 minute, estimate incoming car, days are random(mon-fri) for now
+                self.gate.vehicle_gen()
 
             # need to record starttime for each vehicle's agent in the set
 
