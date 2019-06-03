@@ -1,7 +1,7 @@
 #Student data from PDF
-FTE2016 = 8,217  # Full time student Fall 2016
-FTE2018 = 7,731  # Full time student Fall 2018
-FTE_AVG = int((FTE2016 + FTE2018)/2)
+FTE_2016 = 8,217  # Full time student Fall 2016
+FTE_2018 = 7,731  # Full time student Fall 2018
+FTE_AVG = int((FTE_2016 + FTE_2018)/2)
 
 # Student who drives along
 DRIVE_ALONE_16 = 0.579
@@ -13,8 +13,19 @@ CARPOOL_16 = 0.136  #
 CARPOOL_18 = 0.088
 CARPOOL_AVG = (CARPOOL_16 + CARPOOL_18)/2
 
-#Total number of car
-TOTAL_CAR = INT(FTE_AVG * (DRIVE_ALONE_AVG + CARPOOL_AVG))
+#Total number of student car
+TOTAL_STUDENT_CAR = int(FTE_AVG * (DRIVE_ALONE_AVG + CARPOOL_AVG))
+
+# Other personnel
+STAFF_16 = 329
+STAFF_18 = 371
+STAFF_AVG = int((intSTAFF_16 + STAFF_16)/2)
+
+FACULTY_16 = 360
+FACULTY_18 = 357
+FACULTY_AVG = int((FACULTY_16 + FACULTY_16) /2)
+
+TOTAL_CAR = TOTAL_STUDENT_CAR + FACULTY_AVG + STAFF_AVG
 
 # Variables For the Vehicle Class.
 PERCENT_BIKE = 0.05  # The probablitiy of generating bike instead of a car.
