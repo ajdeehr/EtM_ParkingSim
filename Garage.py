@@ -27,13 +27,17 @@ class ParkingSpot(object):
 
     def park(self, vehicle):
         self.vehicleOccupied = vehicle
+        self.state = 1
 
     def leave(self):
         leavingVehicle = self.vehicleOccupied
         self.vehicleOccupied = None
+        self.state = 0
         return leavingVehicle
 
     def get_parking_type(self):
+        if self.state is 1:
+            return 4
         if self.parkingType is None:
             return 5
         else:

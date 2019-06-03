@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import importlib
 
 importlib.reload(V)
-importlib.reload(Road)
+importlib.reload(Agent)
 
 
 class Model(object):
@@ -25,6 +25,8 @@ class Model(object):
     def __init__(self, dt=0.25, trafficWeight=1):
 
         self.trafficWeight = trafficWeight
+        
+        self.gate = Gate.Gate()
 
         # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
         self.southGarage = Garage.Garage("South Garage", numberofSpot=771,
@@ -33,14 +35,15 @@ class Model(object):
                                          numberofEVSpot=12, trafficWeight=1)
 
         self.campusWayRoad = Road.Road(adjacentGarage=self.southGarage,
-                                       adjacentGarage2=None, trafficWeight=1)
+                                       adjacentGarage2=None, 
+                                       adjacentGate = self.gate, trafficWeight=1)
 
         # self.northGarage.outsideRoad = self.campusWayRoad
         self.southGarage.outsideRoad = self.campusWayRoad
 
         self.numberGarage = 2
 
-        # self.gate = Gate.Gate()
+        
 
         self.school = School.School()
 
@@ -118,13 +121,32 @@ class Model(object):
 
             # need to record spenttime for each vehicle's agent in the set
 
-    def run_session_plot_out(self, num_days=30):
+    def run_session_plot_out(self, num_days=1):
 
         minute_in_a_day = 1440
         no_steps = minute_in_a_day * num_days
 
         for self.step in range(1, no_steps + 1):
+            print(self.step)
+            # generate vehicle and agents in vehicle
+            # every 30 mins
+            if (self.step % 30 == 0):
+                print("car gen")
+                self.gate.vehicle_gen(5)  # 400 is just place holder
 
+            
+            # need to record spenttime for each vehicle's agent in the set
+            if self.step is 1:
+                agent = Agent.Agent()
+                print(agent)
+                vehicle = Vehicle.Vehicle()
+                vehicle.add_agent(agent)
+                
+                self.southGarage.vehicleEnterSpot(self.southGarage.spotDict["666"], vehicle)
+                
+                
+                
+            
             if self.step is 1:
                 plt.ion()
                 self.plot_figure, self.plot_axis, self.plot_image = \

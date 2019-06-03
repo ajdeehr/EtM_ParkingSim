@@ -2,6 +2,9 @@
 
 import random as rand
 import Constants as C
+import Garage
+import Gate
+import Road
 
 class Vehicle(object):
     '''Create a Vehicle and Randomize the type and the number of occupants.
@@ -16,9 +19,10 @@ class Vehicle(object):
         out += "Vehicle: State == " + str(self.state)
         return out
 
-    def __init__(self):
+    def __init__(self, environment=Gate):
         '''Default Constructor'''
 
+        self.environment = environment
         #Set the vehicle type by randomly assigning based on the constants.
         if rand.random() <  C.PERCENT_BIKE:         #If a Bike.
             self.type = C.VEHICLE_TYPE_BIKE
@@ -52,11 +56,18 @@ class Vehicle(object):
     def park(self):
         '''Sets the status to parked'''
         self.state = C.STATE_PARKED
+        self.environment = Garage
 
     def leave(self):
         '''Sets the status to left'''
         self.state = C.STATE_LEFT
+        self.environment = Road
 
     def move(self):
         '''Sets the status to moving'''
         self.state = C.STATE_MOVING
+
+    def update(self):
+        dParked = 0
+        
+        
