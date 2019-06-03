@@ -20,7 +20,7 @@ class Gate(object):
         #added after first milestne meetup (wed 5/29)
         self.agents_list = []
         self.vehicle_list = []
-        self.vehicle_gen(50)
+        # self.vehicle_gen(50)
 
 
 
@@ -36,7 +36,9 @@ class Gate(object):
 
             #Add one passenger of standard or bike.
             if curr_vehicle.is_single_passenger():
-                curr_vehicle.add_agent(Agent.Agent())
+                agent = Agent.Agent()
+                curr_vehicle.add_agent(agent)
+                self.agents_list.append(agent)
                 curr_no_agent = cur_no_agent + 1
                 #update number of agent
                 curr_vehicle.num_of_agents = curr_no_agent
@@ -44,10 +46,12 @@ class Gate(object):
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
                     curr_vehicle.add_agent(Agent.Agent())
+                    
                     curr_no_agent = cur_no_agent + 1
                 #update number of agent
-                curr_vehicle.num_of_agents = curr_no_agent
+                
+                curr_vehicle.num_of_agents = j
 
-
+            self.vehicle_list.append(curr_vehicle)
             self.queueGoingIn.put(curr_vehicle)
             curr_no_car = curr_no_car + 1

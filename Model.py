@@ -24,6 +24,8 @@ class Model(object):
     def __init__(self, dt=0.25, trafficWeight=1):
 
         self.trafficWeight = trafficWeight
+        
+        self.gate = Gate.Gate()
 
         # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
         self.southGarage = Garage.Garage("South Garage", numberofSpot=771,
@@ -32,14 +34,15 @@ class Model(object):
                                          numberofEVSpot=12, trafficWeight=1)
 
         self.campusWayRoad = Road.Road(adjacentGarage=self.southGarage,
-                                       adjacentGarage2=None, trafficWeight=1)
+                                       adjacentGarage2=None, 
+                                       adjacentGate = self.gate, trafficWeight=1)
 
         # self.northGarage.outsideRoad = self.campusWayRoad
         self.southGarage.outsideRoad = self.campusWayRoad
 
         self.numberGarage = 2
 
-        self.gate = Gate.Gate()
+        
 
         self.school = School.School()
 
@@ -123,72 +126,13 @@ class Model(object):
 
         for self.step in range(1, no_steps + 1):
             print(self.step)
-#             # generate vehicle and agents in vehicle
-#             # every 30 mins
-#             if (self.step % 30 == 0):
-#                 print("car gen")
-#                 self.gate.vehicle_gen(400)  # 400 is just place holder
-# 
-#             # need to record starttime for each vehicle's agent in the set
-# 
-#             # added to park spot
-# 
-#             # enter road
-#             if (self.step % 2 == 0):  # every ~2 mins
-#                 print("enter road")
-#                 cur_vehicle = self.gate.queueGoingIn.get()
-# 
-#                 self.campusWayRoad.queueGoingIn.put(cur_vehicle)
-# 
-#                 cur_vehicle = self.campusWayRoad.queueGoingIn.get()
-# 
-#             # enter garage
-#             if (self.step % 4 == 0):  # every ~4 mins
-#                 print("enter garage")
-#                 self.southGarage.vehicleEnterGarage(cur_vehicle)
-# 
-#                 cur_vehicle = self.southGarage.queueGoingIn.get()
-#                 self.southGarage.findParkingSpot(cur_vehicle)
-# 
-#                 # need to record spenttime for each vehicle's agent in the set
-# 
-#             # checking when is time to leave
-#             for agent in self.school.agent_list:
-#                 print("time to leave?")
-#                 if (agent.stay_hours * 60 == self.step):
-#                     # move to lot
-#                     # need to record starttime for each vehicle's agent in the set
-# 
-#                     self.school.move_to_lot(agent)  # need to make this method
-#                     self.school.agent_list.remove(agent)
-# 
-#             # check if all agents at the car yet
-#             for spot in self.southGarage.spotList:
-#                 print("all agents")
-#                 if (spot.vehicleOccupied.num_of_agents == len(
-#                         spot.vehicleOccupied.agents)):
-#                     # need to record leaving time
-#                     # ready to move out
-#                     self.southGarage.vehicleLeavingSpot(spot)
-# 
-#             # leaving garage
-#             print("leave garage")
-#             cur_vehicle = self.southGarage.vehicleLeavingGarage()
-#             if cur_vehicle is None:
-#                 continue
-# 
-#             # enter road
-#             print("enter road")
-#             self.campusWayRoad.queueGoingOut.put(cur_vehicle)
-# 
-#             # leaving road
-#             print("leave road")
-#             cur_vehicle = self.campusWayRoad.queueGoingOut.get()
-# 
-#             # enter gate
-#             print("enter gate")
-#             self.gate.queueGoingOut.put(cur_vehicle)
+            # generate vehicle and agents in vehicle
+            # every 30 mins
+            if (self.step % 30 == 0):
+                print("car gen")
+                self.gate.vehicle_gen(5)  # 400 is just place holder
 
+            
             # need to record spenttime for each vehicle's agent in the set
             if self.step is 1:
                 agent = Agent.Agent()
