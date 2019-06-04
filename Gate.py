@@ -15,8 +15,8 @@ class Gate(object):
 
     def __init__(self):
 
-        self.queueGoingIn = queue.Queue(maxsize=50)
-        self.queueGoingOut = queue.Queue(maxsize=50)
+        self.q_going_in = queue.Queue(maxsize=50)
+        self.q_going_out = queue.Queue(maxsize=50)
 
         #added after first milestne meetup (wed 5/29)
         self.agents_list = []
@@ -104,7 +104,7 @@ class Gate(object):
 
 
             self.vehicle_list.append(curr_vehicle)
-            self.queueGoingIn.put(curr_vehicle)
+            self.q_going_in.put(curr_vehicle)
             total_vehicle += 1
 
         self.num_agents_per_15_mins = total_agent

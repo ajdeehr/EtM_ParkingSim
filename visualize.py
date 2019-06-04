@@ -10,15 +10,15 @@ from datetime import timedelta, datetime
 t = datetime(2019, 6, 3, hour=7)
 
 def plot_garage(aGarage):
-    garage_size = aGarage.numberofSpot + aGarage.blankspots
+    garage_size = aGarage.number_of_spot + aGarage.blank_spots
     # data = N.zeros((N.sqrt(garage_size),N.sqrt(garage_size),3), dtype='f')
     data = N.zeros((garage_size, 3), dtype='f')
     cmap = ['y', 'c', 'b', 'g', 'r', 'k']
     convert = matplotlib.colors.ColorConverter()
 
-    if len(aGarage.spotDict) != 0:
+    if len(aGarage.spot_dict) != 0:
         for i in range(1, garage_size):
-            spot = aGarage.spotDict[str(i)]
+            spot = aGarage.spot_dict[str(i)]
             temp = N.array(convert.to_rgb(cmap(spot.get_parking_type())))
             data[i - 1, :] = temp[:]
     else:
@@ -40,14 +40,14 @@ def plot_garage(aGarage):
 def plot_campus(modelobj, use_obj=None):
     global t
     # fig, axs, imgs = None, None, None
-    garage_size = int(N.power(N.ceil(N.sqrt(modelobj.southGarage.numberofSpot)), 2))
+    garage_size = int(N.power(N.ceil(N.sqrt(modelobj.southGarage.number_of_spot)), 2))
     
     cmap_spots = ['y', 'c', 'b', 'g', 'r', 'k']
     cmap_garage = ['y', 'c', 'b', 'g', 'r', 'k', '0.0']
     cmap_road = ['y', 'c', 'b', 'g', 'r', 'k', '0.8']
-    # garage_size = modelobj.southGarage.numberofSpot
+    # garage_size = modelobj.southGarage.number_of_spot
 
-    # print(modelobj.southGarage.spotDict)
+    # print(modelobj.southGarage.spot_dict)
     if use_obj == None:
         fig = plt.figure(figsize=(6,6))
         axs = []
@@ -81,9 +81,9 @@ def plot_campus(modelobj, use_obj=None):
     convert = matplotlib.colors.ColorConverter()
 
 
-    if len(modelobj.southGarage.spotDict) != 0:
+    if len(modelobj.southGarage.spot_dict) != 0:
         for i in range(1, garage_size):
-            spot = modelobj.southGarage.spotDict[str(i)]
+            spot = modelobj.southGarage.spot_dict[str(i)]
             temp = N.array(convert.to_rgb(cmap_garage[spot.get_parking_type()]))
             data[i - 1, :] = temp[:]
     else:

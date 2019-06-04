@@ -29,17 +29,13 @@ class Model(object):
         self.gate = Gate.Gate()
 
         # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
-        self.southGarage = Garage.Garage("South Garage", numberofSpot=771,
-                                         numberofCarpoolSpot=23,
-                                         numberofHandicappedSpot=20,
-                                         numberofEVSpot=12, trafficWeight=1)
+        self.south_garage = Garage.Garage("South Garage", number_of_spot=771,
+                                         number_of_carpool_spot=23,
+                                         number_of_handicapped_spot=20,
+                                         number_of_EV_spot=12, trafficWeight=1, outsideRoad= self.campus_way_road)
 
-        self.campusWayRoad = Road.Road(adjacentGarage=self.southGarage,
-                                       adjacentGarage2=None,
-                                       adjacentGate = self.gate, trafficWeight=1)
+        self.campus_way_road = Road.Road(2, 2, 3)
 
-        # self.northGarage.outsideRoad = self.campusWayRoad
-        self.southGarage.outsideRoad = self.campusWayRoad
 
         self.numberGarage = 2
 
@@ -70,37 +66,27 @@ class Model(object):
             # added to park spot
 
             # enter road
-            if (self.step % 2 == 0):  # every ~2 mins
-                cur_vehicle = self.gate.queueGoingIn.get()
-
-                self.campusWayRoad.queueGoingIn.put(cur_vehicle)
-
-                cur_vehicle = self.campusWayRoad.queueGoingIn.get()
+            self.campus_way_road.enter_road(gate.q_going_out.get(), self.step)
 
             # enter garage
-            if (self.step % 4 == 0):  # every ~4 mins
-                self.southGarage.vehicleEnterGarage(cur_vehicle)
+            cur_vehicle = self.campus_way_road.arrive_garage(self.step)
+            self.south_garage.q_going_in.put(cur_vehicle)
 
-                cur_vehicle = self.southGarage.queueGoingIn.get()
-                self.southGarage.findParkingSpot(cur_vehicle)
-
-                # need to record spenttime for each vehicle's agent in the set
-
+            # have to add vehicle to parking spot
+            self.south_garage.find_parking_spot(cur_vehicle, self.step)
+            
+            
             # checking when is time to leave
-            for agent in self.school.agent_list:
+            self.school.leave(self.step)
 
-                if (agent.stay_hours * 60 == self.step):
-                    # move to lot
-                    # need to record starttime for each vehicle's agent in the set
 
-                    self.school.move_to_lot(agent)  # need to make this method
-                    self.school.agent_list.remove(agent)
+
 
             # check if all agents at the car yet
             for spot in self.southGarage.spotList:
 
-                if (spot.vehicleOccupied.num_of_agents == len(
-                        spot.vehicleOccupied.agents)):
+                if (spot.vehicle_occupied.num_of_agents == len(
+                        spot.vehicle_occupied.agents)):
                     # need to record leaving time
                     # ready to move out
                     self.southGarage.vehicleLeavingSpot(spot)
@@ -109,13 +95,13 @@ class Model(object):
             cur_vehicle = self.southGarage.vehicleLeavingGarage()
 
             # enter road
-            self.campusWayRoad.queueGoingOut.put(cur_vehicle)
+            self.campusWayRoad.q_going_out.put(cur_vehicle)
 
             # leaving road
-            cur_vehicle = self.campusWayRoad.queueGoingOut.get()
+            cur_vehicle = self.campusWayRoad.q_going_out.get()
 
             # enter gate
-            self.gate.queueGoingOut.put(cur_vehicle)
+            self.gate.q_going_out.put(cur_vehicle)
 
             # need to record spenttime for each vehicle's agent in the set
 
@@ -140,7 +126,7 @@ class Model(object):
                 vehicle = Vehicle.Vehicle()
                 vehicle.add_agent(agent)
 
-                self.southGarage.vehicleEnterSpot(self.southGarage.spotDict["666"], vehicle)
+                self.southGarage.vehicleEnterSpot(self.southGarage.spot_dict["666"], vehicle)
 
 
 
