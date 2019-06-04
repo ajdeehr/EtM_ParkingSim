@@ -28,15 +28,13 @@ class Gate(object):
         self.num_vehicle_per_15_mins = 0
 
 
-    def estimate_agent(row, col):
+    def estimate_agent(no_agent):
 
-        if (Data.table[row, col] == 0):
+        if (no_agent == 0):
             return 0
 
         else:
-            estimated_agent = Data.table[row, col]
-            normal_dist_estimated_agent = N.floor((estimated_agent * 0.05) * N.random.randn() + estimated_agent)
-
+            normal_dist_estimated_agent = N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
             self.num_agents_per_15_mins = normal_dist_estimated_agent
 
 
@@ -51,29 +49,59 @@ class Gate(object):
             #Create a vehicle to add.
             curr_vehicle = Vehicle.Vehicle()
 
-            cur_no_agent = 0
+            cur_no_agent_in_a_car = 0
 
             #Add one passenger of standard or bike.
             if curr_vehicle.is_single_passenger():
+
+                #make a a new agent
                 agent = Agent.Agent()
-                agent
+
+                #record time_start
+                agent.time_start(curr_t)
+
+                #add agent to the current car
                 curr_vehicle.add_agent(agent)
+
+                #add to list of agents
                 self.agents_list.append(agent)
-                curr_no_agent = cur_no_agent + 1
-                #update number of agent
-                curr_vehicle.num_of_agents = curr_no_agent
+
+                #increment
+                curr_no_agent_in_a_car = cur_no_agent_in_a_car + 1
+
+                #update number of agent in the current vehical
+                curr_vehicle.num_of_agents = curr_no_agent_in_a_car
 
                 total_agent = total_agent + 1
 
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
-                    curr_vehicle.add_agent(Agent.Agent())
+                    
+                    #make a a new agent
+                    agent = Agent.Agent()
+                    
+                    #record time_start
+                    agent.time_start(curr_t)
 
-                    curr_no_agent = cur_no_agent + 1
+                    #add agent to the current car
+                    curr_vehicle.add_agent()
+
+                    #add to list of agents
+                    self.agents_list.append(agent)
+
+                    #increment
+                    curr_no_agent_in_a_car = cur_no_agent_in_a_car + 1
+
+                    #update number of agent in the current vehicle
+                    curr_vehicle.num_of_agents = curr_no_agent_in_a_car
+
+                    #update number of agent
                     total_agent = total_agent + 1
-                #update number of agent
 
-                curr_vehicle.num_of_agents = j
+                #update number of agent in the current vehicle
+                curr_vehicle.num_of_agents = curr_no_agent_in_a_car
+
+
 
             self.vehicle_list.append(curr_vehicle)
             self.queueGoingIn.put(curr_vehicle)

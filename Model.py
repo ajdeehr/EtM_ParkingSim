@@ -62,12 +62,10 @@ class Model(object):
         for self.step in range(1, no_steps + 1):
 
             # generate vehicle and agents in vehicle
-            # every 15 mins
-            if (self.step % 15 == 0):
-                self.gate.estimate_vehicle(self.step / 15, N.random.randint(0,4)) #every 15 minute, estimate incoming car, days are random(mon-fri) for now
-                self.gate.vehicle_gen(self.step)
+            # every min
+            self.gate.estimate_vehicle(Data.get_rate("Mon", self.step))
+            self.gate.vehicle_gen(self.step)
 
-            # need to record starttime for each vehicle's agent in the set
 
             # added to park spot
 
@@ -129,10 +127,10 @@ class Model(object):
         for self.step in range(1, no_steps + 1):
             print(self.step)
             # generate vehicle and agents in vehicle
-            # every 30 mins
-            if (self.step % 30 == 0):
-                print("car gen")
-                self.gate.vehicle_gen(5)  # 400 is just place holder
+            # every min
+            print("car gen")
+            self.gate.estimate_agent(Data.get_rate("Mon", self.step))
+            self.gate.vehicle_gen(self.step)  
 
 
             # need to record spenttime for each vehicle's agent in the set
