@@ -20,6 +20,8 @@ class Road(object):
         self.lanes_in = lanesin   #Track this for external objects.
         self.lanes_out = lanesout
 
+        self.min_t_to_pass = min_t_to_pass
+
     def enter_road(self, vehicle, curr_t):
         """ A method for adding the vehicle to the road. It specifically is
         called when the vehicle arrives in the road and before reaching school"""

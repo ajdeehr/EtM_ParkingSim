@@ -39,6 +39,8 @@ VEHICLE_TYPE_BIKE = 1
 VEHICLE_TYPE_HCAP = 2
 VEHICLE_TYPE_CARPOOL = 3
 
+VEHICLE_TYPES = {"Car":0, "Bike":1, "HCap":2, "Carpool":3}
+
 STATE_MOVING = 0  # Current state of the vehicle in the simulation.
 STATE_PARKED = 1
 STATE_LEFT = 2

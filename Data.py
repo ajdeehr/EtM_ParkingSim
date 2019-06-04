@@ -15,6 +15,8 @@ div = int(C.DATA_TIME_STEP / C.TIME_STEP)
 # Repeat the rows for each time stamp duration, and divide by size of time step.
 table = N.repeat(raw_table, div, axis=0) // div
 
+#N.savetxt("Full_Table.csv", table, delimiter=",")
+
 
 def get_rate(day, timestep):
     ''' A function which returns the rate for the given day and time step.

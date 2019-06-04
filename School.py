@@ -88,6 +88,10 @@ class School:
         if time in self.num_arrived:
             num_times = self.num_arrived[time]
 
+        #If zero, just return the sum.
+        if num_times == 0:
+            return sum_times
+
         #Calculate average and return it.
         return sum_times / num_times
 

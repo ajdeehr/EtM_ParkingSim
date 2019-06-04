@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "Model.py", line 5, in <module>
+    import Vehicle
+  File "/home/ardalan/Desktop/EtM_ParkingSim/Vehicle.py", line 6, in <module>
+    import Gate
+  File "/home/ardalan/Desktop/EtM_ParkingSim/Gate.py", line 12, in <module>
+    import Data
+  File "/home/ardalan/Desktop/EtM_ParkingSim/Data.py", line 18, in <module>
+    N.savetext("Full_Table.csv", table)
+AttributeError: module 'numpy' has no attribute 'savetext'

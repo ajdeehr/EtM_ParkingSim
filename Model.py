@@ -35,10 +35,10 @@ class Model(object):
         self.campus_way_road = Road.Road(2, 2, 3)
 
         # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
-        self.south_garage = Garage.Garage("South Garage", number_of_spot=771,
-                                         number_of_carpool_spot=23,
-                                         number_of_handicapped_spot=20,
-                                         number_of_EV_spot=12, trafficWeight=1)
+        self.south_garage = Garage.Garage("South Garage", num_spot=771,
+                                         num_carpool_spot=23,
+                                         num_handicapped_spot=20,
+                                         num_bike_spot=12)
 
         self.numberGarage = 2
 
@@ -51,34 +51,50 @@ class Model(object):
         self.plot_axis = None
         self.plot_image = None
 
+    def dump(self):
+        print("**********************************************", file=sys.stderr)
+        print("Timestep", self.step, file=sys.stderr)
+        print("Gate", ", In:", self.gate.q_going_in.qsize(), ", Out:", self.gate.q_going_out.qsize(), file=sys.stderr)
+        print("Road", ", In:", len(self.campus_way_road.q_going_in), ", Out:", len(self.campus_way_road.q_going_out), file=sys.stderr)
+        print("Garage", ", In:", self.south_garage.q_going_in.qsize(), ", Out:", self.south_garage.q_going_out.qsize(), file=sys.stderr)
+        print("School", ", In:", len(self.school.agents_in_school), file=sys.stderr)
+        print("**********************************************\n", file=sys.stderr)
+
+
     def run_session(self, num_days=30):
 
         minute_in_a_day = 1440
         no_steps = minute_in_a_day * num_days
 
-        for self.step in range(1, no_steps + 1):
-            self.log("Curr Time is " )
-
-
+        for self.step in range(1, no_steps):
             # generate vehicle and agents in vehicle
             # every min
             self.gate.estimate_agent(Data.get_rate("Mon", self.step))
             self.gate.vehicle_gen(self.step)
-            self.log("Vehicle Generated." )
 
-            # added to park spot
+
             for i in range(self.campus_way_road.lanes_in):
-                # enter road
-                self.campus_way_road.enter_road(self.gate.q_going_out.get(), self.step)
+                #Leave the vehicle from the gate.
+                vehicle = self.gate.leave_gate()
+                if vehicle is not None:
+                    # enter road
+                    self.campus_way_road.enter_road(vehicle, self.step)
 
                 # enter garage
                 cur_vehicle = self.campus_way_road.arrive_garage(self.step)
-                self.south_garage.q_going_in.put(cur_vehicle)
-
 
             # have to add vehicle to parking spot
-            self.south_garage.find_parking_spot(self.south_garage.q_going_in, self.step)
-            self.log("Added to Parking spot.")
+            if cur_vehicle is not None:
+                if self.south_garage.find_parking_spot(cur_vehicle):
+                    #Send all the agents to school.
+                    for agent in cur_vehicle.agents:
+                        self.school.arrived(agent, self.step)
+
+                    #Remove them from the vehicle.
+                    cur_vehicle.agents = set()
+                else:   #If not parking spots were found.
+                    #Go back to the road to find parking.
+                    self.campus_way_road.enter_road(cur_vehicle, self.step)
 
             # checking when is time to leave
             leaving_agent = self.school.leave(self.step)
@@ -86,23 +102,26 @@ class Model(object):
                 self.south_garage.find_car(leaving_agent)
                 leaving_agent = self.school.leave(self.step)
 
-            # added to park spot
+            # Go though all the lanes, and leave garage.
             for i in range(self.campus_way_road.lanes_out):
                 # leaving garage
-                cur_vehicle = self.south_garage.q_going_out.pop()
+                cur_vehicle = self.south_garage.leave_garage()
                 if cur_vehicle != None :
                     # enter road
                     self.campus_way_road.leave_garage(cur_vehicle, self.step)
-                    cur_vehicle = self.south_garage.q_going_out.pop()
+                    cur_vehicle = self.south_garage.leave_garage()
 
                 # leaving road
                 cur_vehicle = self.campus_way_road.exit_road()
-
-                # enter gate
-                self.gate.q_going_out.put(cur_vehicle)
+                if cur_vehicle is not None:
+                    # enter gate
+                    self.gate.q_going_out.put(cur_vehicle)
 
             #Remove the vehicle from the gate and get avg.
-            avg_leaving, num_leaving = self.gate.exit_gate()
+            avg_leaving, num_leaving = self.gate.exit_gate(self.step)
+
+            self.dump()
+
 
     def run_session_plot_out(self, num_days=1):
 
@@ -125,7 +144,7 @@ class Model(object):
                 vehicle = Vehicle.Vehicle()
                 vehicle.add_agent(agent)
 
-                self.southGarage.vehicleEnterSpot(self.southGarage.spot_dict["666"], vehicle)
+                self.south_garage.vehicleEnterSpot(self.southGarage.spot_dict["666"], vehicle)
 
 
 
@@ -148,7 +167,7 @@ class Model(object):
 def main():
     model = Model()
     model.run_session(1)
-    model.run_session_plot_out(num_days=30)
+    #model.run_session_plot_out(num_days=30)
 
 
 main()

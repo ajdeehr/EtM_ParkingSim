@@ -15,8 +15,8 @@ class Gate(object):
 
     def __init__(self):
 
-        self.q_going_in = queue.Queue(maxsize=50)
-        self.q_going_out = queue.Queue(maxsize=50)
+        self.q_going_in = queue.Queue()
+        self.q_going_out = queue.Queue()
 
         #added after first milestne meetup (wed 5/29)
         self.agents_list = []
@@ -41,8 +41,16 @@ class Gate(object):
             return 0
 
         else:
-            normal_dist_estimated_agent = N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
-            self.num_agents_per_t = normal_dist_estimated_agent
+            #normal_dist_estimated_agent = N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
+            #self.num_agents_per_t = normal_dist_estimated_agent
+            self.num_agents_per_t = no_agent / 4
+
+    def leave_gate(self):
+        ''' A method which returns the vehicle if ant exist, if not it returns None'''
+        if self.q_going_in.qsize() == 0:
+            return None
+        else:
+            return self.q_going_in.get()
 
     def exit_gate(self, curr_t):
         ''' A method which exits all the cars at the gate and returns average
@@ -52,19 +60,21 @@ class Gate(object):
         avg_time_to_leave = 0
 
         #Go through every agent leaving and calculate the sum of times.
-        for vehicle in self.q_going_out:
+        while self.q_going_out.qsize() != 0:
+            vehicle = self.q_going_out.get()
+
             for agent in vehicle.agents:
                 num_agents_leaving += 1
                 avg_time_to_leave += agent.time_spent(curr_t)
 
         #Calculate average time it took for them to leave.
-        avg_time_to_leave /= num_agents_leaving
+        if num_agents_leaving != 0:
+            avg_time_to_leave /= num_agents_leaving
 
         #Reset the going out queue.
-        self.q_going_out = queue.Queue(maxsize=50)
+        self.q_going_out = queue.Queue()
 
         return avg_time_to_leave, num_agents_leaving
-
 
 
     def vehicle_gen(self, curr_t):
@@ -73,7 +83,6 @@ class Gate(object):
         total_vehicle = 0
 
         while total_agent < self.num_agents_per_t:
-
             #Create a vehicle to add.
             curr_vehicle = Vehicle.Vehicle()
 
@@ -104,7 +113,6 @@ class Gate(object):
 
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
-
                     #make a a new agent
                     agent = Agent.Agent()
 
@@ -112,7 +120,7 @@ class Gate(object):
                     agent.time_start(curr_t)
 
                     #add agent to the current car
-                    curr_vehicle.add_agent()
+                    curr_vehicle.add_agent(agent)
 
                     #add to list of agents
                     self.agents_list.append(agent)
@@ -128,7 +136,6 @@ class Gate(object):
 
                 #update number of agent in the current vehicle
                 curr_vehicle.num_of_agents = curr_no_agent_in_a_car
-
 
 
             self.vehicle_list.append(curr_vehicle)
