@@ -39,16 +39,16 @@ class Garage(object):
 
     def __init__(self, garage_name="Garage1", number_of_spot=771,
                  number_of_carpool_spot=23, number_of_handicapped_spot=20,
-                 number_of_EV_spot=12, trafficWeight=1, outsideRoad=campus_way_road):
+                 number_of_bike_spot=12, trafficWeight=1):
         self.garage_name = garage_name
         self.number_of_spot = number_of_spot
-        
+
         self.blank_spots = int(N.power(N.ceil(N.sqrt(number_of_spot)), 2) - number_of_spot)
 
         self.number_of_carpool_spot = number_of_carpool_spot
         self.number_of_handicapped_spot = number_of_handicapped_spot
-        self.number_of_EV_spot = number_of_EV_spot
-        self.number_of_normal_spot = number_of_spot - number_of_carpool_spot - number_of_handicapped_spot - number_of_EV_spot
+        self.number_of_bike_spot = number_of_bike_spot
+        self.number_of_normal_spot = number_of_spot - number_of_carpool_spot - number_of_handicapped_spot - number_of_bike_spot
 
         self.spot_dict = self.init_parking_spaces()
 
@@ -58,10 +58,6 @@ class Garage(object):
 
         # how fast traffic is moving
         self.traffic_weight = trafficWeight
-
-        # outside road link
-        self.outside_road = None
-        
 
 
     def init_parking_spaces(self):
@@ -80,9 +76,9 @@ class Garage(object):
                 spot_dict[str(i)] = aHandicappedSpot
                 i = i + 1
 
-            for spot in range(0, self.number_of_EV_spot):
-                aEVSpot = ParkingSpot(parking_number=i, parking_type=3)
-                spot_dict[str(i)] = aEVSpot
+            for spot in range(0, self.number_of_bike_spot):
+                abikeSpot = ParkingSpot(parking_number=i, parking_type=3)
+                spot_dict[str(i)] = abikeSpot
                 i = i + 1
 
 
@@ -98,9 +94,19 @@ class Garage(object):
                 i = i + 1
                 # spotList.append(aSpot)
 
-                
+
         return spot_dict, spotPriorityQueue
 
+    #Find the agent's car and put it in the out queue.
+    def find_car(self, agent):
+        #Add the agent to the leaving car.
+        spot_dict[str(agent.parking_spot_id)].vehicle_occupied.add_agent(agent)
+        vehicle = spot_dict[str(agent.parking_spot_id)].vehicle_occupied
+
+        #Check if all the passengers are here to leave.
+        if len(vehicle.agents) == vehicle.num_of_agents:
+            self.q_going_out.put(vehicle)
+            spot_dict[str(agent.parking_spot_id)].vehicle_occupied = None
 
     # find spot
     def find_parking_spot(self, vehicle, curr_t):
@@ -112,25 +118,24 @@ class Garage(object):
 
                 for i in range(self.number_of_spot - self.number_of_normal_spot, self.number_of_spot):
                     spot = spot_dict[str(i)]
-                    
+
                     if spot.vehicle_occupied == None:
                         spot = vehicle
 
                         # make agents remember where they parked
                         for agent in vehicle.agents:
                             agent.parking_spot_id = spot.parking_number
-                            agent.time_spent(curr_t)
                             # agent.lot_id = garage_name
 
                         # make agents go to School
                         while len(vehicle.agents) != 0:
-                            School.go_to_school(vehicle.agents.pop())
+                            School.arrived(vehicle.agents.pop(), curr_t)
 
                     else:
                         pass
 
                 if len(vehicle.agents) != 0:
-                    q_going_out.put(vehicle)
+                    self.q_going_out.put(vehicle)
 
             #BIKE
             elif vehicle.type is 1:
@@ -148,26 +153,24 @@ class Garage(object):
                         # make agents remember where they parked
                         for agent in vehicle.agents:
                             agent.parking_spot_id = spot.parking_number
-                            agent.time_spent(curr_t)
-                            # agent.lot_id = garage_name
 
                         # make agents go to School
                         while len(vehicle.agents) != 0:
-                            School.go_to_school(vehicle.agents.pop())
+                            School.arrived(vehicle.agents.pop(), curr_t)
 
                     else:
                         pass
 
                 if len(vehicle.agents) != 0:
-                    q_going_out.put(vehicle)
+                    self.q_going_out.put(vehicle)
 
 
 
             #CARPOOL
-            else:
+            elif vehicle.type is 3:
 
                 for i in range(self.number_of_carpool_spot + self.number_of_handicapped_spot, self.number_of_spot - self.number_of_normal_spot):
-                    
+
                     spot = spot_dict[str(i)]
 
                     if spot.vehicle_occupied == None:
@@ -175,8 +178,6 @@ class Garage(object):
                         # make agents remember where they parked
                         for agent in vehicle.agents:
                             agent.parking_spot_id = spot.parking_number
-                            agent.time_spent(curr_t)
-                            # agent.lot_id = garage_name
 
                         # make agents go to School
                         while len(vehicle.agents) != 0:
@@ -187,16 +188,9 @@ class Garage(object):
                         pass
 
                 if len(vehicle.agents) != 0:
-                    q_going_out.put(vehicle)
+                    self.q_going_out.put(vehicle)
 
-
-
-
-            # if no more spot availble, random choice
-            if N.random.randint(self.q_going_in.qsize()) > int(
-                    self.q_going_in.maxsize) / 4:
-                # leave the garage, enter back to road!
-                self.outside_road.leave_garage(vehicle)
-
+            # if no more spot availble, send it out of the school.
             else:
-                self.q_going_in.put(vehicle)
+                # leave the garage, enter back to road!
+                self.q_going_out.put(vehicle)
