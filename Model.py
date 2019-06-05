@@ -51,14 +51,20 @@ class Model(object):
         self.plot_axis = None
         self.plot_image = None
 
+    def get_time_str(self):
+        '''A method which returns the string representation of time based on curr step'''
+        return str(C.DATA_START_TIME + int(self.step / C.DATA_TIME_STEP)) \
+                    + ":" + str(self.step % C.DATA_TIME_STEP) + "\n"
+
     def curr_stat(self):
-        print("\n\nTimestep", self.step, "***********************************************************************************", file=sys.stderr)
-        print("\nTime is", 10 + int(self.step / 60), ":" , self.step % 60, "\n", file=sys.stderr)
+        '''A method which returns the current statistics of the model at the current time step.'''
+        print("\n\nTimestep", self.step, "**************************************", file=sys.stderr)
+        print("\nTime is", self.get_time_str(), file=sys.stderr)
         print(self.gate, file=sys.stderr)
         print(self.campus_way_road, file=sys.stderr)
         print(self.south_garage, file=sys.stderr)
         print(self.school, file=sys.stderr)
-        print("\n************************************************************************************************\n", file=sys.stderr)
+        print("\n***************************************************\n", file=sys.stderr)
 
     def run_session(self, day):
 

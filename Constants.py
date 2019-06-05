@@ -66,6 +66,7 @@ PLUS_MINUS = 30
 #Dataset Constants
 DATA_FILE_NAME = "./Data/Demand_by_hr.csv"
 DATA_TIME_STEP = 60
+DATA_START_TIME = 10
 
 #Simulation Variables
 TIME_STEP = 1       #Default simulation time step (1 Minute by default).
