@@ -63,10 +63,10 @@ class Garage(object):
         out += "Garage: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
         out += "******************************************"
         return out
-
+    
     def __init__(self, garage_name="Garage1", num_spot=771,
                  num_carpool_spot=23, num_handicapped_spot=20,
-                 num_bike_spot=12):
+                 num_bike_spot=12, garage_width=31):
         self.garage_name = garage_name
         self.num_spot = num_spot
 
