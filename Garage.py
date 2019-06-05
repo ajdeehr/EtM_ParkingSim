@@ -26,7 +26,11 @@ import Constants as C
 
 
 class ParkingSpot(object):
-
+'''
+A container that holds a vehicle, to be placed in the Garage class. Stores the
+vehicle reference for the vehicle that is place within, and the ID number for
+the spot in a garage, which is used for searching for the car.
+'''
     def __repr__(self):
         return self.__str__()
 
@@ -71,6 +75,9 @@ class ParkingSpot(object):
 
 
 class Garage(object):
+'''
+A container that holds dictionaries of Parking Spots. The amount in each container is specified in the constructor. There are 2 queues, one for going in and one for coming out
+'''
 
     def __repr__(self):
         return self.__str__()
