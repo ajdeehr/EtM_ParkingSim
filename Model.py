@@ -51,24 +51,26 @@ class Model(object):
         self.plot_axis = None
         self.plot_image = None
 
-    def dump(self):
+    def curr_stat(self):
         print("\n\nTimestep", self.step, "***********************************************************************************", file=sys.stderr)
-        print(self.gate)
-        print(self.campus_way_road)
-        print(self.south_garage)
-        print(self.school)
-        print("**************************************************************************************************\n", file=sys.stderr)
+        print("\nTime is", 10 + int(self.step / 60), ":" , self.step % 60, "\n", file=sys.stderr)
+        print(self.gate, file=sys.stderr)
+        print(self.campus_way_road, file=sys.stderr)
+        print(self.south_garage, file=sys.stderr)
+        print(self.school, file=sys.stderr)
+        print("\n************************************************************************************************\n", file=sys.stderr)
 
-    def run_session(self, num_days=30):
+    def run_session(self, day):
 
         for self.step in range(Data.get_num_steps()):
             # generate vehicle and agents in vehicle
             # every min
-            self.gate.estimate_agent(Data.get_rate("Mon", self.step))
+            self.gate.estimate_vehicles(Data.get_rate(day, self.step))
             self.gate.vehicle_gen(self.step)
 
-
-            for i in range(self.campus_way_road.lanes_in):
+            #Generate a congestion multiplier randomly within the range.
+            in_congestion = N.random.randint(C.ROAD_FLOW_MIN, C.ROAD_FLOW_MAX)
+            for i in range( in_congestion * self.campus_way_road.lanes_in):
                 #Leave the vehicle from the gate.
                 vehicle = self.gate.leave_gate()
                 if vehicle is not None:
@@ -92,8 +94,7 @@ class Model(object):
 
                 else:   #If not parking spots were found.
                     #Go back to the road to find parking.
-                    #self.campus_way_road.enter_road(cur_vehicle, self.step)
-                    self.campus_way_road.leave_garage(cur_vehicle, self.step)
+                    self.campus_way_road.enter_road(cur_vehicle, self.step)
 
             # checking when is time to leave
             leaving_agent = self.school.leave(self.step)
@@ -102,39 +103,25 @@ class Model(object):
                 leaving_agent = self.school.leave(self.step)
 
             # Go though all the lanes, and leave garage.
-            for i in range(self.campus_way_road.lanes_out):
+            #Generate a congestion multiplier randomly within the range.
+            out_congestion = N.random.randint(C.ROAD_FLOW_MIN, C.ROAD_FLOW_MAX)
+            for i in range(out_congestion * self.campus_way_road.lanes_out):
                 # leaving garage
                 cur_vehicle = self.south_garage.leave_garage()
                 if cur_vehicle != None :
                     # enter road
                     self.campus_way_road.leave_garage(cur_vehicle, self.step)
-                    cur_vehicle = self.south_garage.leave_garage()
 
                 # leaving road
                 cur_vehicle = self.campus_way_road.exit_road(self.step)
                 if cur_vehicle is not None:
                     # enter gate
-                    self.gate.q_going_out.put(cur_vehicle)
+                    self.gate.enter_gate(cur_vehicle)
 
             #Remove the vehicle from the gate and get avg.
             avg_leaving, num_leaving = self.gate.exit_gate(self.step)
 
-            self.dump()
-
-    def run_sim(self, day):
-        self.step = 0
-
-        #Go through every single time step in the data file.
-        for self.step in range(Data.get_num_steps()):
-
-            #Generate cars and put agents in them based on the rate from data.
-            self.gate.estimate_agent(Data.get_rate(day, self.step))
-            self.gate.vehicle_gen(self.step)
-
-            print(self.gate)
-            vehicle_to_leave = self.gate.leave_gate()
-            self.gate.enter_gate(vehicle_to_leave)
-
+            self.curr_stat()
 
 
     def run_session_plot_out(self, num_days=1):
@@ -147,7 +134,7 @@ class Model(object):
             # generate vehicle and agents in vehicle
             # every min
             print("car gen")
-            self.gate.estimate_agent(Data.get_rate("Mon", self.step))
+            self.gate.estimate_vehicles(Data.get_rate("Mon", self.step))
             self.gate.vehicle_gen(self.step)
 
 
@@ -180,8 +167,7 @@ class Model(object):
 
 def main():
     model = Model()
-    model.run_session(1)
-    #model.run_sim("Mon")
+    model.run_session("Mon")
     #model.run_session_plot_out(num_days=30)
 
 

@@ -13,7 +13,7 @@ class Agent(object):
 
         out = "Agent: Dump *********************************" + "\n"
         out += "Agent: agent_id == " + str(self.agent_id) + "\n"
-        out += "Agent: stay_hours == " + str(self.stay_hours) + "\n"
+        out += "Agent: stay_time == " + str(self.stay_time) + "\n"
         out += "Agent: time_arrived == " + str(self.time_arrived) + "\n"
         out += "Agent: parking_spot_id == " + str(self.parking_spot_id) + "\n"
         out += "Agent: lot_id == " + str(self.lot_id) + "\n"
@@ -31,10 +31,9 @@ class Agent(object):
         #Set the number of hours the student is staying.
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)
         #C.MAX_NO_DAYS_SCHOOL = 5 (5 days of school in a week)
-        #d = N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1)
-        #cr = self.credits / d
-        #self.stay_hours = N.ceil(cr)
-        self.stay_hours = 6
+        d = N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1)
+        cr = self.credits / d
+        self.stay_time = N.ceil(cr) * (60 / C.TIME_STEP)
 
         #Store and increment the agent id.
         self.agent_id = Agent.curr_agent_id
@@ -57,4 +56,4 @@ class Agent(object):
     def time_leaving_school(self, arrival_time):
         '''A method which returns the time step which the agent is supposed to
         leave the school based on the arrival time.'''
-        return arrival_time + self.stay_hours
+        return arrival_time + self.stay_time

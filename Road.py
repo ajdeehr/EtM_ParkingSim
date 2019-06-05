@@ -14,10 +14,10 @@ class Road(object):
     def __str__(self):
         '''A method to get a string representation of a class'''
 
-        out = "Road: Dump *********************************" + "\n"
-        out += "Road: Number int going in Queue == " + str(len(self.q_going_in)) + "\n"
-        out += "Road: Number int going out Queue == " + str(len(self.q_going_out)) + "\n"
-        out += "*******************************************"
+        out = "Road: Dump *******************************" + "\n"
+        out += "Road: Number in going in Queue == " + str(len(self.q_going_in)) + "\n"
+        out += "Road: Number in going out Queue == " + str(len(self.q_going_out)) + "\n"
+        out += "******************************************"
         return out
 
     def __init__(self, lanesin = 1, lanesout = 1, min_t_to_pass = 3):

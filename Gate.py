@@ -22,8 +22,12 @@ class Gate(object):
 
         #Print the garage information.
         out = "Gate: Dump *******************************" + "\n"
-        out += "Gate: Number int going in Queue == " + str(self.q_going_in.qsize()) + "\n"
-        out += "Gate: Number int going out Queue == " + str(self.q_going_out.qsize()) + "\n"
+        out += "Gate: Total Number Of Agents Entered: " + str(len(self.agents_list)) + "\n"
+        out += "Gate: Total Number Of Vehicles Entered: " + str(len(self.vehicle_list)) + "\n"
+        out += "Gate: Total Number Of Agents Left: " + str(self.total_agents_left) + "\n"
+        out += "Gate: Total Number Of Vehicles Left: " + str(self.total_vehicles_left) + "\n"
+        out += "Gate: Number in going in Queue == " + str(self.q_going_in.qsize()) + "\n"
+        out += "Gate: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
         out += "******************************************"
         return out
 
@@ -38,8 +42,11 @@ class Gate(object):
 
         # self.vehicle_gen(50)
 
-        self.num_agents_per_t = 0
+        self.num_vehicles_per_t = 0
         self.num_vehicle_per_t = 0
+
+        self.total_vehicles_left = 0
+        self.total_agents_left = 0
 
         #Key == arriving_time_step, Value == sum_of_all_arrival_times
         self.sum_t_to_gate = {}
@@ -49,14 +56,14 @@ class Gate(object):
         self.num_leaving = {}
 
 
-    def estimate_agent(self, no_agent):
+    def estimate_vehicles(self, no_agent):
 
         if (no_agent == 0):
             return 0
 
         else:
             normal_dist_estimated_agent = N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
-            self.num_agents_per_t = normal_dist_estimated_agent
+            self.num_vehicles_per_t = normal_dist_estimated_agent
 
     def leave_gate(self):
         ''' A method which returns the vehicle if ant exist, if not it returns None'''
@@ -88,6 +95,10 @@ class Gate(object):
                 num_agents_leaving += 1
                 avg_time_to_leave += agent.time_spent(curr_t)
 
+            #Keep track of total agents and vehicles that left.
+            self.total_agents_left += num_agents_leaving
+            self.total_vehicles_left += 1
+
         #Calculate average time it took for them to leave.
         if num_agents_leaving != 0:
             avg_time_to_leave /= num_agents_leaving
@@ -103,7 +114,7 @@ class Gate(object):
         total_agent = 0
         total_vehicle = 0
 
-        while total_agent < self.num_agents_per_t:
+        while total_agent < self.num_vehicles_per_t:
             #Create a vehicle to add.
             curr_vehicle = Vehicle.Vehicle()
 
@@ -160,5 +171,5 @@ class Gate(object):
             self.q_going_in.put(curr_vehicle)
             total_vehicle += 1
 
-        self.num_agents_per_t = total_agent
+        self.num_vehicles_per_t = total_agent
         self.num_vehicle_per_t = total_vehicle

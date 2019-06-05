@@ -20,9 +20,9 @@ class School:
         for timestep in self.agents_in_school:
             num_agents_in_school += len(self.agents_in_school[timestep])
 
-        out = "School: Dump *********************************" + "\n"
+        out = "School: Dump *****************************" + "\n"
         out += "School: Number of agents in school == " + str(num_agents_in_school) + "\n"
-        out += "*********************************************"
+        out += "******************************************"
         return out
 
     def __init__(self):

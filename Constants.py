@@ -45,6 +45,9 @@ STATE_MOVING = 0  # Current state of the vehicle in the simulation.
 STATE_PARKED = 1
 STATE_LEFT = 2
 
+ROAD_FLOW_MIN = 5           #Minimum number of vehicles who enter or leave in a t.
+ROAD_FLOW_MAX = 10          #Maximum number of vehicles who enter or leave in a t.
+
 # Variables for the Agent class.
 AGENT_STUDENT = 0
 AGENT_FACULTY = 1

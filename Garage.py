@@ -63,12 +63,12 @@ class Garage(object):
                     num_filled += 1
 
         #Print the garage information.
-        out = "Garage: Dump ********************************" + "\n"
+        out = "Garage: Dump *****************************" + "\n"
         out += "Garage: Number Filled == " + str(num_filled) + "\n"
         out += "Garage: Number of Spots == " + str(self.num_spot) + "\n"
-        out += "Garage: Number int going in Queue == " + str(self.q_going_in.qsize()) + "\n"
-        out += "Garage: Number int going out Queue == " + str(self.q_going_out.qsize()) + "\n"
-        out += "*********************************************"
+        out += "Garage: Number in going in Queue == " + str(self.q_going_in.qsize()) + "\n"
+        out += "Garage: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
+        out += "******************************************"
         return out
 
     def __init__(self, garage_name="Garage1", num_spot=771,
@@ -117,7 +117,6 @@ class Garage(object):
 
     #Find the agent's car and put it in the out queue.
     def find_car(self, agent):
-        print("Garage: Find Car Called")
         #Add the agent to the leaving car.
         for dict in self.spot_dict:
             if agent.parking_spot_id in self.spot_dict[dict]:
@@ -129,17 +128,14 @@ class Garage(object):
                 vehicle = self.spot_dict[dict][org_id].vehicle_occupied
                 #Check if all the passengers are here to leave.
                 if len(vehicle.agents) == vehicle.num_of_agents:
-                    print("Garage: Vehicle Left")
                     self.q_going_out.put(vehicle)
                     self.spot_dict[dict][org_id].vehicle_occupied = None
 
     def find_parking_spot(self, vehicle):
         ''' Find spot, if not successful, return -1. '''
-        print("Garage: Find Parking spot called.")
         for spot in self.spot_dict[vehicle.type]:
             if self.spot_dict[vehicle.type][spot].vehicle_occupied == None:
                 self.spot_dict[vehicle.type][spot].vehicle_occupied = vehicle
-                print("Garage: Parking spot found.")
                 return self.spot_dict[vehicle.type][spot].parking_number
 
         return -1
