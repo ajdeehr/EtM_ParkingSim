@@ -1,12 +1,27 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 2 Jun 2019:  Original by Ardalan Ahanchi, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Adam Deehring, and Dewey Nguyen
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
+
+#---------------- Module General Import and Declarations ----------------------
+
 import random as rand
 import Constants as C
 import numpy as N
 
 import Agent
 
-# =======
-# Ardalan Ahanchi
-# June 2, 2019
 
 class School:
 

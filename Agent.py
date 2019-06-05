@@ -1,4 +1,21 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 24 May 2019:  Original by Adam Deehring, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Ardalan Ahanchi, 
+#   and Dewey Nguyen
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
 
+#---------------- Module General Import and Declarations ----------------------
 import numpy as N
 import Constants as C
 
@@ -21,7 +38,8 @@ class Agent(object):
         return out
 
     def __init__(self, stayhours = 8, sigma = 5):
-        '''Default constructor which creates the object with the hours staying'''
+        '''Default constructor which creates the object with the hours 
+		staying'''
 
         global curr_agent_id
 
@@ -45,15 +63,17 @@ class Agent(object):
 
     def time_start(self, curr_time):
         '''Save the current time to calculate waiting times.
-        Will be called once when arrived to gate, and another time when leaving from school'''
+        Will be called once when arrived to gate, and another time 
+		when leaving from school'''
         self.start_time = curr_time
 
     def time_spent(self, curr_time):
         '''Return the time spent since start_time.
-        Will be called once when arrived to school, and another time when leaving from gate'''
+        Will be called once when arrived to school, and another time when 
+		leaving from gate'''
         return curr_time - self.start_time
 
     def time_leaving_school(self, arrival_time):
-        '''A method which returns the time step which the agent is supposed to
-        leave the school based on the arrival time.'''
+        '''A method which returns the time step which the agent is supposed 
+		to leave the school based on the arrival time.'''
         return arrival_time + self.stay_time

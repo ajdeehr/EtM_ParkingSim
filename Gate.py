@@ -1,5 +1,20 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 29 May 2019:  Original by Dewey Nguyen, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Adam Deehring, and Ardalan Ahanchi
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
 
-
+#---------------- Module General Import and Declarations ----------------------
 import random as rand
 import Constants as C
 import numpy as N

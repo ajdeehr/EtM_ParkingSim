@@ -1,3 +1,21 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 23 May 2019:  Original by Dewey Nguyen, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Adam Deehring, and Ardalan Ahanchi
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
+
+#---------------- Module General Import and Declarations ----------------------
+
 import numpy as N
 import queue
 
@@ -28,7 +46,8 @@ class ParkingSpot(object):
         # parkingID
         self.parking_number = parking_number
 
-        # VEHICLE_TYPE_CAR = 0     #Represent the types of the vehicle.
+		#Represent the types of the vehicle.
+        # VEHICLE_TYPE_CAR = 0     
         # VEHICLE_TYPE_BIKE = 1
         # VEHICLE_TYPE_HCAP = 2
         # VEHICLE_TYPE_CARPOOL = 3
@@ -37,14 +56,18 @@ class ParkingSpot(object):
         # put the vehicle obj here
         self.vehicle_occupied = None
 
-
+	# Used for 
     def get_parking_type(self):
-        if self.state is 1:
-            return 4
+	""" Used for visualization, return a specific index in a color map
+		cmap_garage = ['b', 'g', 'c','y', 'r', 'k', '0.0']
+	"""
         if self.parking_type is None:
-            return 5
+            return 5 # returns black for a spot that no car can park in
         else:
-            return self.parking_type
+            if self.vehicle_occupied is None:
+                return 4 # returns red for unoccupied spot
+            else:
+                return self.parking_type 
 
 
 class Garage(object):
@@ -63,7 +86,7 @@ class Garage(object):
         out += "Garage: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
         out += "******************************************"
         return out
-    
+
     def __init__(self, garage_name="Garage1", num_spot=771,
                  num_carpool_spot=23, num_handicapped_spot=20,
                  num_bike_spot=12, garage_width=31):
@@ -71,14 +94,14 @@ class Garage(object):
         self.num_spot = num_spot
 
         self.blankspots = (int(N.ceil(self.num_spot / garage_width)) * garage_width) - self.num_spot
-        
+
         self.num_carpool_spot = num_carpool_spot
         self.num_handicapped_spot = num_handicapped_spot
         self.num_bike_spot = num_bike_spot
-        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot        
-        self.garage_width = garage_width
-        
-        
+        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot
+       
+		self.garage_width = garage_width # for visualization purposes
+
         self.curr_id = 1
         self.spot_dict = {}
 

@@ -1,10 +1,25 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 3 Jun 2019:  Original by Ardalan Ahanchi, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Adam Deehring, and Dewey Nguyen
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
+
+#---------------- Module General Import and Declarations ----------------------
 import numpy as N
 import matplotlib.pyplot as plt
 import sys
 import Constants as C
 
-# Ardalan Ahanchi
-# June 3, 2019
 
 # Read the raw table from the DATA_FILE_NAME file.
 raw_table = N.genfromtxt(C.DATA_FILE_NAME, delimiter=',', dtype=int)
