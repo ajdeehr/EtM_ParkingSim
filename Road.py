@@ -48,7 +48,7 @@ class Road(object):
         to enter the road in order to leave"""
         self.q_going_out.append((vehicle, curr_t))
 
-    def exit_road(self):
+    def exit_road(self, curr_t):
         """ A method which returns the vehicle which has arrived to gate. If
         No vehicle is ready to exit (To Gate), it just returns None """
 

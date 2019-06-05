@@ -56,17 +56,16 @@ class Model(object):
         print("Timestep", self.step, file=sys.stderr)
         print("Gate", ", In:", self.gate.q_going_in.qsize(), ", Out:", self.gate.q_going_out.qsize(), file=sys.stderr)
         print("Road", ", In:", len(self.campus_way_road.q_going_in), ", Out:", len(self.campus_way_road.q_going_out), file=sys.stderr)
-        print("Garage", ", In:", self.south_garage.q_going_in.qsize(), ", Out:", self.south_garage.q_going_out.qsize(), file=sys.stderr)
+        self.south_garage.dump()
         print("School", ", In:", len(self.school.agents_in_school), file=sys.stderr)
         print("**********************************************\n", file=sys.stderr)
 
+#***********************Sim functions*******************************************
 
+#*******************************************************************************
     def run_session(self, num_days=30):
 
-        minute_in_a_day = 1440
-        no_steps = minute_in_a_day * num_days
-
-        for self.step in range(1, no_steps):
+        for self.step in range(Data.get_num_steps()):
             # generate vehicle and agents in vehicle
             # every min
             self.gate.estimate_agent(Data.get_rate("Mon", self.step))
@@ -83,18 +82,22 @@ class Model(object):
                 # enter garage
                 cur_vehicle = self.campus_way_road.arrive_garage(self.step)
 
-            # have to add vehicle to parking spot
-            if cur_vehicle is not None:
-                if self.south_garage.find_parking_spot(cur_vehicle):
-                    #Send all the agents to school.
-                    for agent in cur_vehicle.agents:
-                        self.school.arrived(agent, self.step)
+                # have to add vehicle to parking spot
+                if cur_vehicle is not None:
+                    spot_id = self.south_garage.find_parking_spot(cur_vehicle)
+                    if spot_id > 0:
+                        #Send all the agents to school.
+                        for agent in cur_vehicle.agents:
+                            agent.parking_spot_id = spot_id
+                            self.school.arrived(agent, self.step)
 
-                    #Remove them from the vehicle.
-                    cur_vehicle.agents = set()
+                        #Remove them from the vehicle.
+                        cur_vehicle.agents = set()
+                        
                 else:   #If not parking spots were found.
                     #Go back to the road to find parking.
-                    self.campus_way_road.enter_road(cur_vehicle, self.step)
+                    #self.campus_way_road.enter_road(cur_vehicle, self.step)
+                    self.campus_way_road.leave_garage(cur_vehicle, self.step)
 
             # checking when is time to leave
             leaving_agent = self.school.leave(self.step)
@@ -112,7 +115,7 @@ class Model(object):
                     cur_vehicle = self.south_garage.leave_garage()
 
                 # leaving road
-                cur_vehicle = self.campus_way_road.exit_road()
+                cur_vehicle = self.campus_way_road.exit_road(self.step)
                 if cur_vehicle is not None:
                     # enter gate
                     self.gate.q_going_out.put(cur_vehicle)

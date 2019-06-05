@@ -28,9 +28,10 @@ class Agent(object):
         #Set the number of hours the student is staying.
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)
         #C.MAX_NO_DAYS_SCHOOL = 5 (5 days of school in a week)
-        d = N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1)
-        cr = self.credits / d
-        self.stay_hours = N.ceil(cr)
+        #d = N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1)
+        #cr = self.credits / d
+        #self.stay_hours = N.ceil(cr)
+        self.stay_hours = 5
 
         #Store and increment the agent id.
         self.agent_id = Agent.curr_agent_id

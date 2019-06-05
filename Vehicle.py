@@ -50,7 +50,7 @@ class Vehicle(object):
 
     def is_single_passenger(self):
         '''Returns if the car can accept multiple agents'''
-        if self.type == C.VEHICLE_TYPE_CAR or self.type == C.VEHICLE_TYPE_BIKE:
+        if self.type != C.VEHICLE_TYPE_CARPOOL:
             return True
         else:
             return False

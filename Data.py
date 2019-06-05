@@ -17,6 +17,9 @@ table = N.repeat(raw_table, div, axis=0) // div
 
 #N.savetxt("Full_Table.csv", table, delimiter=",")
 
+def get_num_steps():
+    ''' A function to get the total number of steps '''
+    return table.shape[0]
 
 def get_rate(day, timestep):
     ''' A function which returns the rate for the given day and time step.

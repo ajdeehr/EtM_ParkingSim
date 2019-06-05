@@ -81,24 +81,38 @@ class Garage(object):
 
     #Find the agent's car and put it in the out queue.
     def find_car(self, agent):
+        print("Garage: Find Car Called")
         #Add the agent to the leaving car.
         for dict in self.spot_dict:
             if agent.parking_spot_id in self.spot_dict[dict]:
-                dict[agent.parking_spot_id].vehicle_occupied.add_agent(agent)
+                org_id = agent.parking_spot_id
 
-                vehicle = dict[agent.parking_spot_id].vehicle_occupied
+                agent.parking_spot_id = 0
+                self.spot_dict[dict][org_id].vehicle_occupied.add_agent(agent)
 
+                vehicle = self.spot_dict[dict][org_id].vehicle_occupied
                 #Check if all the passengers are here to leave.
                 if len(vehicle.agents) == vehicle.num_of_agents:
+                    print("Garage: Vehicle Left")
                     self.q_going_out.put(vehicle)
-                    dict[curr_id].vehicle_occupied = None
+                    self.spot_dict[dict][org_id].vehicle_occupied = None
 
     def find_parking_spot(self, vehicle):
-        ''' Find spot, if not successful, return false. '''
-
+        ''' Find spot, if not successful, return -1. '''
+        print("Garage: Find Parking spot called.")
         for spot in self.spot_dict[vehicle.type]:
             if self.spot_dict[vehicle.type][spot].vehicle_occupied == None:
                 self.spot_dict[vehicle.type][spot].vehicle_occupied = vehicle
-                return True
+                print("Garage: Parking spot found.")
+                return self.spot_dict[vehicle.type][spot].parking_number
 
-        return False
+        return -1
+
+    def dump(self):
+        num_filled = 0
+        for dict in self.spot_dict:
+            for spot in self.spot_dict[dict]:
+                if self.spot_dict[dict][spot].vehicle_occupied is not None:
+                    num_filled += 1
+
+        print("Garage , Number Filled:", num_filled, "  Number Of Spots:", self.num_spot)

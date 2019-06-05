@@ -41,9 +41,8 @@ class Gate(object):
             return 0
 
         else:
-            #normal_dist_estimated_agent = N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
-            #self.num_agents_per_t = normal_dist_estimated_agent
-            self.num_agents_per_t = no_agent / 4
+            normal_dist_estimated_agent = N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
+            self.num_agents_per_t = normal_dist_estimated_agent
 
     def leave_gate(self):
         ''' A method which returns the vehicle if ant exist, if not it returns None'''
@@ -51,6 +50,7 @@ class Gate(object):
             return None
         else:
             return self.q_going_in.get()
+
 
     def exit_gate(self, curr_t):
         ''' A method which exits all the cars at the gate and returns average
@@ -107,7 +107,7 @@ class Gate(object):
                 curr_no_agent_in_a_car = cur_no_agent_in_a_car + 1
 
                 #update number of agent in the current vehical
-                curr_vehicle.num_of_agents = curr_no_agent_in_a_car
+                curr_vehicle.num_of_agents = 1
 
                 total_agent = total_agent + 1
 
@@ -129,13 +129,10 @@ class Gate(object):
                     curr_no_agent_in_a_car = cur_no_agent_in_a_car + 1
 
                     #update number of agent in the current vehicle
-                    curr_vehicle.num_of_agents = curr_no_agent_in_a_car
+                    curr_vehicle.num_of_agents += 1
 
                     #update number of agent
                     total_agent = total_agent + 1
-
-                #update number of agent in the current vehicle
-                curr_vehicle.num_of_agents = curr_no_agent_in_a_car
 
 
             self.vehicle_list.append(curr_vehicle)

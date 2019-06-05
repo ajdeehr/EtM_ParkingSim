@@ -54,15 +54,15 @@ MIN_NO_DAYS_SCHOOL = 2
 MAX_NO_DAYS_SCHOOL = 5
 
 # Constants for the model.
-MIN_PASSENGERS = 1
-MAX_PASSENGERS = 3
+MIN_PASSENGERS = 2
+MAX_PASSENGERS = 4
 
 # Constants for data sampling in Data.py
 PLUS_MINUS = 30
 
 #Dataset Constants
-DATA_FILE_NAME = "./Data/2DonCampus.csv"
-DATA_TIME_STEP = 15
+DATA_FILE_NAME = "./Data/Demand_by_hr.csv"
+DATA_TIME_STEP = 60
 
 #Simulation Variables
 TIME_STEP = 1       #Default simulation time step (1 Minute by default).
