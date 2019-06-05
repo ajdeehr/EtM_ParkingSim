@@ -70,13 +70,15 @@ class Garage(object):
         self.garage_name = garage_name
         self.num_spot = num_spot
 
-        self.blank_spots = int(N.power(N.ceil(N.sqrt(num_spot)), 2) - num_spot)
-
+        self.blankspots = (int(N.ceil(self.num_spot / garage_width)) * garage_width) - self.num_spot
+        
         self.num_carpool_spot = num_carpool_spot
         self.num_handicapped_spot = num_handicapped_spot
         self.num_bike_spot = num_bike_spot
-        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot
-
+        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot        
+        self.garage_width = garage_width
+        
+        
         self.curr_id = 1
         self.spot_dict = {}
 
