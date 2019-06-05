@@ -39,12 +39,13 @@ class ParkingSpot(object):
 
 
     def get_parking_type(self):
-        if self.state is 1:
-            return 4
         if self.parking_type is None:
             return 5
         else:
-            return self.parking_type
+            if self.vehicle_occupied is None:
+                return 4
+            else:
+                return self.parking_type
 
 
 class Garage(object):
@@ -66,19 +67,19 @@ class Garage(object):
 
     def __init__(self, garage_name="Garage1", num_spot=771,
                  num_carpool_spot=23, num_handicapped_spot=20,
-                 num_bike_spot=12):
+                 num_bike_spot=12, garage_width = 31):
         self.garage_name = garage_name
         self.num_spot = num_spot
 
         self.blankspots = (int(N.ceil(self.num_spot / garage_width)) * garage_width) - self.num_spot
-        
+
         self.num_carpool_spot = num_carpool_spot
         self.num_handicapped_spot = num_handicapped_spot
         self.num_bike_spot = num_bike_spot
-        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot        
+        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot
         self.garage_width = garage_width
-        
-        
+
+
         self.curr_id = 1
         self.spot_dict = {}
 
