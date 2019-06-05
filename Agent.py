@@ -9,13 +9,16 @@ class Agent(object):
         return self.__str__()
 
     def __str__(self):
-        string = "Agent: agent_id == " + str(self.agent_id) + "\n"
-        string += "Agent: stay_hours == " + str(self.stay_hours) + "\n"
-        # string += "Agent: time_arrived == " + str(self.time_arrived) + "\n"
-        # string += "Agent: parking_spot_id == " + str(self.parking_spot_id) + "\n"
-        string += "Agent: lot_id == " + self.lot_id + "\n"
+        '''A method to get a string representation of a class'''
 
-        return string
+        out = "Agent: Dump *********************************" + "\n"
+        out += "Agent: agent_id == " + str(self.agent_id) + "\n"
+        out += "Agent: stay_hours == " + str(self.stay_hours) + "\n"
+        out += "Agent: time_arrived == " + str(self.time_arrived) + "\n"
+        out += "Agent: parking_spot_id == " + str(self.parking_spot_id) + "\n"
+        out += "Agent: lot_id == " + str(self.lot_id) + "\n"
+        out += "*********************************************"
+        return out
 
     def __init__(self, stayhours = 8):
         '''Default constructor which creates the object with the hours staying'''
@@ -31,7 +34,7 @@ class Agent(object):
         #d = N.random.randint(C.MIN_NO_DAYS_SCHOOL, C.MAX_NO_DAYS_SCHOOL + 1)
         #cr = self.credits / d
         #self.stay_hours = N.ceil(cr)
-        self.stay_hours = 5
+        self.stay_hours = 6
 
         #Store and increment the agent id.
         self.agent_id = Agent.curr_agent_id

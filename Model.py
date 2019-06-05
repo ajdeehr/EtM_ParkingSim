@@ -52,17 +52,13 @@ class Model(object):
         self.plot_image = None
 
     def dump(self):
-        print("**********************************************", file=sys.stderr)
-        print("Timestep", self.step, file=sys.stderr)
-        print("Gate", ", In:", self.gate.q_going_in.qsize(), ", Out:", self.gate.q_going_out.qsize(), file=sys.stderr)
-        print("Road", ", In:", len(self.campus_way_road.q_going_in), ", Out:", len(self.campus_way_road.q_going_out), file=sys.stderr)
-        self.south_garage.dump()
-        print("School", ", In:", len(self.school.agents_in_school), file=sys.stderr)
-        print("**********************************************\n", file=sys.stderr)
+        print("\n\nTimestep", self.step, "***********************************************************************************", file=sys.stderr)
+        print(self.gate)
+        print(self.campus_way_road)
+        print(self.south_garage)
+        print(self.school)
+        print("**************************************************************************************************\n", file=sys.stderr)
 
-#***********************Sim functions*******************************************
-
-#*******************************************************************************
     def run_session(self, num_days=30):
 
         for self.step in range(Data.get_num_steps()):
@@ -93,7 +89,7 @@ class Model(object):
 
                         #Remove them from the vehicle.
                         cur_vehicle.agents = set()
-                        
+
                 else:   #If not parking spots were found.
                     #Go back to the road to find parking.
                     #self.campus_way_road.enter_road(cur_vehicle, self.step)
@@ -124,6 +120,21 @@ class Model(object):
             avg_leaving, num_leaving = self.gate.exit_gate(self.step)
 
             self.dump()
+
+    def run_sim(self, day):
+        self.step = 0
+
+        #Go through every single time step in the data file.
+        for self.step in range(Data.get_num_steps()):
+
+            #Generate cars and put agents in them based on the rate from data.
+            self.gate.estimate_agent(Data.get_rate(day, self.step))
+            self.gate.vehicle_gen(self.step)
+
+            print(self.gate)
+            vehicle_to_leave = self.gate.leave_gate()
+            self.gate.enter_gate(vehicle_to_leave)
+
 
 
     def run_session_plot_out(self, num_days=1):
@@ -170,6 +181,7 @@ class Model(object):
 def main():
     model = Model()
     model.run_session(1)
+    #model.run_sim("Mon")
     #model.run_session_plot_out(num_days=30)
 
 

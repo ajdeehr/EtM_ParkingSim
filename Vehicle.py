@@ -15,8 +15,12 @@ class Vehicle(object):
 
     def __str__(self):
         '''A method to get a string representation of a class'''
-        out = "Vehicle: Type == " + str(self.type) + "\n"
-        out += "Vehicle: State == " + str(self.state)
+        out = "Vehicle: Dump ********************************" + "\n"
+        out += "Vehicle: Type == " + str(self.type) + "\n"
+        out += "Vehicle: State == " + str(self.state) + "\n"
+        out += "Vehicle: Number of Agents in Vehicle == " + str(len(self.agents)) + "\n"
+        out += "Vehicle: Tota number of Agents == " + str(self.num_of_agents)
+        out += "*********************************************"
         return out
 
     def __init__(self, environment=Gate):

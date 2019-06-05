@@ -9,6 +9,20 @@ import Constants as C
 
 class ParkingSpot(object):
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        '''A method to get a string representation of a class'''
+
+        #Print the garage information.
+        out = "ParkingSpot: Dump ********************************" + "\n"
+        out += "ParkingSpot: Spot ID == " + str(self.parking_number) + "\n"
+        out += "ParkingSpot: Parking Type == " + str(self.parking_type) + "\n"
+        out += "ParkingSpot: Is Occupied == " + str(self.vehicle_occupied != None) + "\n"
+        out += "*************************************************"
+        return out
+
     def __init__(self, parking_number=0, parking_type="Blank"):
 
         # parkingID
@@ -34,6 +48,28 @@ class ParkingSpot(object):
 
 
 class Garage(object):
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        '''A method to get a string representation of a class'''
+        #Calculate the number of spots that are filled.
+        num_filled = 0
+        for dict in self.spot_dict:
+            for spot in self.spot_dict[dict]:
+                if self.spot_dict[dict][spot].vehicle_occupied is not None:
+                    #print(self.spot_dict[dict][spot].parking_number)
+                    num_filled += 1
+
+        #Print the garage information.
+        out = "Garage: Dump ********************************" + "\n"
+        out += "Garage: Number Filled == " + str(num_filled) + "\n"
+        out += "Garage: Number of Spots == " + str(self.num_spot) + "\n"
+        out += "Garage: Number int going in Queue == " + str(self.q_going_in.qsize()) + "\n"
+        out += "Garage: Number int going out Queue == " + str(self.q_going_out.qsize()) + "\n"
+        out += "*********************************************"
+        return out
 
     def __init__(self, garage_name="Garage1", num_spot=771,
                  num_carpool_spot=23, num_handicapped_spot=20,
@@ -107,12 +143,3 @@ class Garage(object):
                 return self.spot_dict[vehicle.type][spot].parking_number
 
         return -1
-
-    def dump(self):
-        num_filled = 0
-        for dict in self.spot_dict:
-            for spot in self.spot_dict[dict]:
-                if self.spot_dict[dict][spot].vehicle_occupied is not None:
-                    num_filled += 1
-
-        print("Garage , Number Filled:", num_filled, "  Number Of Spots:", self.num_spot)

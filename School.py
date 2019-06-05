@@ -10,6 +10,21 @@ import Agent
 
 class School:
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        '''A method to get a string representation of a class'''
+        #Calculate the number still in school.
+        num_agents_in_school = 0
+        for timestep in self.agents_in_school:
+            num_agents_in_school += len(self.agents_in_school[timestep])
+
+        out = "School: Dump *********************************" + "\n"
+        out += "School: Number of agents in school == " + str(num_agents_in_school) + "\n"
+        out += "*********************************************"
+        return out
+
     def __init__(self):
         ''' A simple default constructor to initialize the school dictionaries '''
 

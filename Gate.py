@@ -4,6 +4,7 @@ import random as rand
 import Constants as C
 import numpy as N
 import queue
+import sys
 
 import Road
 import Agent
@@ -12,6 +13,19 @@ import Vehicle
 import Data
 
 class Gate(object):
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        '''A method to get a string representation of a class'''
+
+        #Print the garage information.
+        out = "Gate: Dump *******************************" + "\n"
+        out += "Gate: Number int going in Queue == " + str(self.q_going_in.qsize()) + "\n"
+        out += "Gate: Number int going out Queue == " + str(self.q_going_out.qsize()) + "\n"
+        out += "******************************************"
+        return out
 
     def __init__(self):
 
@@ -50,6 +64,13 @@ class Gate(object):
             return None
         else:
             return self.q_going_in.get()
+
+    def enter_gate(self, vehicle):
+        ''' A method which puts the vehicle inside the gate (To go out)'''
+        if vehicle is not None:
+            self.q_going_out.put(vehicle)
+        else:
+            print("Gate: enter_gate(): Error, vehicle is None.", file=sys.stderr)
 
 
     def exit_gate(self, curr_t):

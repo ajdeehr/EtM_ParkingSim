@@ -8,6 +8,18 @@ class Road(object):
     """Create a road object which holds the cars for the weight amount of time.
     """
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        '''A method to get a string representation of a class'''
+
+        out = "Road: Dump *********************************" + "\n"
+        out += "Road: Number int going in Queue == " + str(len(self.q_going_in)) + "\n"
+        out += "Road: Number int going out Queue == " + str(len(self.q_going_out)) + "\n"
+        out += "*******************************************"
+        return out
+
     def __init__(self, lanesin = 1, lanesout = 1, min_t_to_pass = 3):
         """ Default constructor, it holds lanes_in and lanes_out so the calling
         object can keep track of how many times it needs to call enter, arrive,
