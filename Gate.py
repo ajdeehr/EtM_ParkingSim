@@ -48,6 +48,8 @@ class Gate(object):
         self.total_vehicles_left = 0
         self.total_agents_left = 0
 
+        #Dictionaries for the stats.
+
         #Key == arriving_time_step, Value == sum_of_all_arrival_times
         self.sum_t_to_gate = {}
 
@@ -81,11 +83,10 @@ class Gate(object):
 
 
     def exit_gate(self, curr_t):
-        ''' A method which exits all the cars at the gate and returns average
-        leaving time, and number of agents leaving.'''
+        ''' A method which exits all the cars at the gate.'''
 
         num_agents_leaving = 0
-        avg_time_to_leave = 0
+        sum_time_to_leave = 0
 
         #Go through every agent leaving and calculate the sum of times.
         while self.q_going_out.qsize() != 0:
@@ -93,23 +94,33 @@ class Gate(object):
 
             for agent in vehicle.agents:
                 num_agents_leaving += 1
-                avg_time_to_leave += agent.time_spent(curr_t)
+                sum_time_to_leave += agent.time_spent(curr_t)
 
             #Keep track of total agents and vehicles that left.
             self.total_agents_left += num_agents_leaving
             self.total_vehicles_left += 1
 
-        #Calculate average time it took for them to leave.
-        if num_agents_leaving != 0:
-            avg_time_to_leave /= num_agents_leaving
-
         #Reset the going out queue.
         self.q_going_out = queue.Queue()
 
-        return avg_time_to_leave, num_agents_leaving
+        #Add the new data to the two dictionaries (For stats.)
+
+        #Add sum of time from the school to the gate.
+        if curr_t not in self.sum_t_to_gate:
+            self.sum_t_to_gate[curr_t] = 0
+
+        self.sum_t_to_gate[curr_t] += sum_time_to_leave
+
+        #Add number leaving from the school to the gate.
+        if curr_t not in self.num_leaving:
+            self.num_leaving[curr_t] = 0
+
+        self.num_leaving[curr_t] += num_agents_leaving
 
 
     def vehicle_gen(self, curr_t):
+        ''' A function which generates vehicles and adds passengers in them.
+        It then puts them into the queue in queue. '''
 
         total_agent = 0
         total_vehicle = 0
@@ -173,3 +184,35 @@ class Gate(object):
 
         self.num_vehicles_per_t = total_agent
         self.num_vehicle_per_t = total_vehicle
+
+    def avg_time_to_leave(self, time):
+        ''' A method which returns the average time it took (In terms of timesteps)
+        for the students to leave the gate after exiting school at the given time. '''
+
+        #Get the sum of times it took students to leave gate at given time.
+        sum_times = 0
+        if time in self.sum_t_to_gate:
+            sum_times = self.sum_t_to_gate[time]
+
+        #Get the number of students which were captured for that time step.
+        num_times = 0
+        if time in self.num_leaving:
+            num_times = self.num_leaving[time]
+
+        #If zero, just return the sum.
+        if num_times == 0:
+            return sum_times
+
+        #Calculate average and return it.
+        return sum_times / num_times
+
+
+    def agents_arrived_at_t(self, time):
+        ''' A method which returns the number of agents which left at time. '''
+
+        #If no agent has been recorded on that time, just return 0.
+        if time not in self.num_leaving:
+            return 0
+
+        #Get the number left from the dictionary and return it.
+        return self.num_leaving[time]

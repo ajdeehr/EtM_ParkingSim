@@ -54,17 +54,10 @@ class Garage(object):
 
     def __str__(self):
         '''A method to get a string representation of a class'''
-        #Calculate the number of spots that are filled.
-        num_filled = 0
-        for dict in self.spot_dict:
-            for spot in self.spot_dict[dict]:
-                if self.spot_dict[dict][spot].vehicle_occupied is not None:
-                    #print(self.spot_dict[dict][spot].parking_number)
-                    num_filled += 1
 
         #Print the garage information.
         out = "Garage: Dump *****************************" + "\n"
-        out += "Garage: Number Filled == " + str(num_filled) + "\n"
+        out += "Garage: Number Filled == " + str(self.utilization()) + "\n"
         out += "Garage: Number of Spots == " + str(self.num_spot) + "\n"
         out += "Garage: Number in going in Queue == " + str(self.q_going_in.qsize()) + "\n"
         out += "Garage: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
@@ -96,6 +89,19 @@ class Garage(object):
         # going in/out lane
         self.q_going_in = queue.Queue()
         self.q_going_out = queue.Queue()
+
+    def utilization(self):
+        ''' A method which returns the utilization size (number of filled spots) '''
+
+        #Calculate the number of spots that are filled.
+        num_filled = 0
+        for dict in self.spot_dict:
+            for spot in self.spot_dict[dict]:
+                if self.spot_dict[dict][spot].vehicle_occupied is not None:
+                    #print(self.spot_dict[dict][spot].parking_number)
+                    num_filled += 1
+
+        return num_filled
 
 
     def init_parking_spaces(self, spot_type, size):

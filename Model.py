@@ -119,7 +119,7 @@ class Model(object):
                     self.gate.enter_gate(cur_vehicle)
 
             #Remove the vehicle from the gate and get avg.
-            avg_leaving, num_leaving = self.gate.exit_gate(self.step)
+            self.gate.exit_gate(self.step)
 
             self.curr_stat()
 
@@ -168,6 +168,8 @@ class Model(object):
 def main():
     model = Model()
     model.run_session("Mon")
+    print(model.gate.avg_time_to_leave(100))
+    print(model.school.avg_time_to_arrive(100))
     #model.run_session_plot_out(num_days=30)
 
 

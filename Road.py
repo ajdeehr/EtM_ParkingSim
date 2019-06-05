@@ -20,7 +20,7 @@ class Road(object):
         out += "******************************************"
         return out
 
-    def __init__(self, lanesin = 1, lanesout = 1, min_t_to_pass = 3):
+    def __init__(self, lanesin = 1, lanesout = 1, min_t_to_pass = 10):
         """ Default constructor, it holds lanes_in and lanes_out so the calling
         object can keep track of how many times it needs to call enter, arrive,
         leave, or exit. Additionally, min_t_to_pass keeps track of the minimum
@@ -48,7 +48,7 @@ class Road(object):
             return None
 
         #If the time passed since enterance is less than min_t_to_pass return None.
-        elif curr_t - self.q_going_in[0][1] >= self.min_t_to_pass:
+        elif curr_t - self.q_going_in[0][1] <= self.min_t_to_pass:
             return None
 
         #If vehicle is available to exit to the parking lot, remove and return it.
@@ -69,7 +69,7 @@ class Road(object):
             return None
 
         #If the time passed since leaving garage is less than min_t_to_pass return None.
-        elif curr_t - self.q_going_out[0][1] >= self.min_t_to_pass:
+        elif curr_t - self.q_going_out[0][1] <= self.min_t_to_pass:
             return None
 
         #If vehicle is available to exit to the gate, remove and return it.
