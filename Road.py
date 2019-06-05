@@ -33,6 +33,9 @@ class Road(object):
         self.lanes_out = lanesout
 
         self.min_t_to_pass = min_t_to_pass
+        
+        self.length = 3
+        self.width = 40
 
     def enter_road(self, vehicle, curr_t):
         """ A method for adding the vehicle to the road. It specifically is

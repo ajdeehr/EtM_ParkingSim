@@ -14,7 +14,7 @@ class ParkingSpot(object):
 
     def __str__(self):
         '''A method to get a string representation of a class'''
-
+        
         #Print the garage information.
         out = "ParkingSpot: Dump ********************************" + "\n"
         out += "ParkingSpot: Spot ID == " + str(self.parking_number) + "\n"
@@ -22,6 +22,7 @@ class ParkingSpot(object):
         out += "ParkingSpot: Is Occupied == " + str(self.vehicle_occupied != None) + "\n"
         out += "*************************************************"
         return out
+        
 
     def __init__(self, parking_number=0, parking_type="Blank"):
 
@@ -36,24 +37,31 @@ class ParkingSpot(object):
 
         # put the vehicle obj here
         self.vehicle_occupied = None
-
-
+    
     def get_parking_type(self):
-        if self.state is 1:
-            return 4
         if self.parking_type is None:
             return 5
         else:
-            return self.parking_type
+            if self.vehicle_occupied is None:
+                return 4
+            else:
+                return self.parking_type
 
 
-class Garage(object):
-
+class Garage(object):        
+        
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
         '''A method to get a string representation of a class'''
+        #Calculate the number of spots that are filled.	
+        num_filled = 0	
+        for dict in self.spot_dict:	
+            for spot in self.spot_dict[dict]:	
+                if self.spot_dict[dict][spot].vehicle_occupied is not None:	
+                    #print(self.spot_dict[dict][spot].parking_number)	
+                    num_filled += 1
 
         #Print the garage information.
         out = "Garage: Dump *****************************" + "\n"
@@ -63,19 +71,21 @@ class Garage(object):
         out += "Garage: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
         out += "******************************************"
         return out
+    
 
     def __init__(self, garage_name="Garage1", num_spot=771,
                  num_carpool_spot=23, num_handicapped_spot=20,
-                 num_bike_spot=12):
+                 num_bike_spot=12, garage_width=31):
         self.garage_name = garage_name
         self.num_spot = num_spot
-
-        self.blank_spots = int(N.power(N.ceil(N.sqrt(num_spot)), 2) - num_spot)
-
+        
+        self.blankspots = (int(N.ceil(self.num_spot / garage_width)) * garage_width) - self.num_spot
+        
         self.num_carpool_spot = num_carpool_spot
         self.num_handicapped_spot = num_handicapped_spot
         self.num_bike_spot = num_bike_spot
-        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot
+        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot        
+        self.garage_width = garage_width
 
         self.curr_id = 1
         self.spot_dict = {}
@@ -90,6 +100,8 @@ class Garage(object):
         self.q_going_in = queue.Queue()
         self.q_going_out = queue.Queue()
 
+        self.utilization = N.zeros((int(1440 / C.TIME_STEP,)), dtype='f')
+        
     def utilization(self):
         ''' A method which returns the utilization size (number of filled spots) '''
 
@@ -102,8 +114,10 @@ class Garage(object):
                     num_filled += 1
 
         return num_filled
-
-
+            
+            
+                
+        
     def init_parking_spaces(self, spot_type, size):
         ''' A method which initializes the list for the parking types'''
 

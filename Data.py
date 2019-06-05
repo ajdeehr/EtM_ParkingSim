@@ -25,7 +25,6 @@ def get_rate(day, timestep):
     ''' A function which returns the rate for the given day and time step.
     day should be an integer defined in Constants file (C.DAYS) and timestep
     should be the t which we're looking for.
-
     Sample usage is: print( get_rate("Mon", 148) ) '''
 
     # Check if the day is valid.

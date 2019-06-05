@@ -109,6 +109,8 @@ class School:
 
         #Calculate average and return it.
         return sum_times / num_times
+        
+        # return N.divide(sum_times / num_times)
 
 
     def agents_arrived_at_t(self, time):

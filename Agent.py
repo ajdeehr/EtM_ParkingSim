@@ -1,4 +1,3 @@
-
 import numpy as N
 import Constants as C
 
@@ -20,13 +19,13 @@ class Agent(object):
         out += "*********************************************"
         return out
 
-    def __init__(self, stayhours = 8):
+    def __init__(self, stayhours = 8, sigma = 5):
         '''Default constructor which creates the object with the hours staying'''
 
         global curr_agent_id
 
         #This generate a number of a norm distro with mean 15 and sigma 5
-        self.credits = N.floor(5 * N.random.randn() + 15)
+        self.credits = N.floor(sigma * N.random.randn() + 15)
 
         #Set the number of hours the student is staying.
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)

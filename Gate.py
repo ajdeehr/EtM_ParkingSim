@@ -4,7 +4,6 @@ import random as rand
 import Constants as C
 import numpy as N
 import queue
-import sys
 
 import Road
 import Agent
@@ -31,7 +30,8 @@ class Gate(object):
         out += "******************************************"
         return out
 
-    def __init__(self):
+    def __init__(self, sigma = 5):
+        self.sigma = sigma
 
         self.q_going_in = queue.Queue()
         self.q_going_out = queue.Queue()
@@ -44,11 +44,12 @@ class Gate(object):
 
         self.num_vehicles_per_t = 0
         self.num_vehicle_per_t = 0
-
+        
         self.total_vehicles_left = 0
         self.total_agents_left = 0
-
-        #Dictionaries for the stats.
+        
+        self.num_agents_per_t_list = []
+        self.num_vehicle_per_t_list = []
 
         #Key == arriving_time_step, Value == sum_of_all_arrival_times
         self.sum_t_to_gate = {}
@@ -56,7 +57,6 @@ class Gate(object):
         #Key == arriving_time_step, Value == num_of_agents_left_at_time_step
         #It is used for calcularing the average instant rate leaving.
         self.num_leaving = {}
-
 
     def estimate_vehicles(self, no_agent):
 
@@ -83,7 +83,8 @@ class Gate(object):
 
 
     def exit_gate(self, curr_t):
-        ''' A method which exits all the cars at the gate.'''
+        ''' A method which exits all the cars at the gate and returns average
+        leaving time, and number of agents leaving.'''
 
         num_agents_leaving = 0
         sum_time_to_leave = 0
@@ -105,13 +106,13 @@ class Gate(object):
 
         #Add the new data to the two dictionaries (For stats.)
 
-        #Add sum of time from the school to the gate.
+         #Add sum of time from the school to the gate.
         if curr_t not in self.sum_t_to_gate:
             self.sum_t_to_gate[curr_t] = 0
 
         self.sum_t_to_gate[curr_t] += sum_time_to_leave
 
-        #Add number leaving from the school to the gate.
+         #Add number leaving from the school to the gate.
         if curr_t not in self.num_leaving:
             self.num_leaving[curr_t] = 0
 
@@ -119,8 +120,6 @@ class Gate(object):
 
 
     def vehicle_gen(self, curr_t):
-        ''' A function which generates vehicles and adds passengers in them.
-        It then puts them into the queue in queue. '''
 
         total_agent = 0
         total_vehicle = 0
@@ -135,7 +134,7 @@ class Gate(object):
             if curr_vehicle.is_single_passenger():
 
                 #make a a new agent
-                agent = Agent.Agent()
+                agent = Agent.Agent(self.sigma)
 
                 #record time_start
                 agent.time_start(curr_t)
@@ -157,7 +156,7 @@ class Gate(object):
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
                     #make a a new agent
-                    agent = Agent.Agent()
+                    agent = Agent.Agent(self.sigma)
 
                     #record time_start
                     agent.time_start(curr_t)
@@ -181,38 +180,40 @@ class Gate(object):
             self.vehicle_list.append(curr_vehicle)
             self.q_going_in.put(curr_vehicle)
             total_vehicle += 1
-
-        self.num_vehicles_per_t = total_agent
+            
+        self.num_agents_per_t = total_agent
+        self.num_agents_per_t_list.append((total_agent, curr_t))
         self.num_vehicle_per_t = total_vehicle
-
+        self.num_vehicle_per_t_list.append((total_vehicle, curr_t))
+        
     def avg_time_to_leave(self, time):
         ''' A method which returns the average time it took (In terms of timesteps)
         for the students to leave the gate after exiting school at the given time. '''
 
-        #Get the sum of times it took students to leave gate at given time.
+         #Get the sum of times it took students to leave gate at given time.
         sum_times = 0
         if time in self.sum_t_to_gate:
             sum_times = self.sum_t_to_gate[time]
 
-        #Get the number of students which were captured for that time step.
+         #Get the number of students which were captured for that time step.
         num_times = 0
         if time in self.num_leaving:
             num_times = self.num_leaving[time]
 
-        #If zero, just return the sum.
+         #If zero, just return the sum.
         if num_times == 0:
             return sum_times
 
-        #Calculate average and return it.
+         #Calculate average and return it.
         return sum_times / num_times
 
 
     def agents_arrived_at_t(self, time):
         ''' A method which returns the number of agents which left at time. '''
 
-        #If no agent has been recorded on that time, just return 0.
+         #If no agent has been recorded on that time, just return 0.
         if time not in self.num_leaving:
             return 0
 
-        #Get the number left from the dictionary and return it.
+         #Get the number left from the dictionary and return it.
         return self.num_leaving[time]
