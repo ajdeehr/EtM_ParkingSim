@@ -47,6 +47,9 @@ class Gate(object):
 
         self.total_vehicles_left = 0
         self.total_agents_left = 0
+        
+        self.num_agents_per_t_list = []
+        self.num_vehicle_per_t_list = []
 
         #Dictionaries for the stats.
 
@@ -182,8 +185,11 @@ class Gate(object):
             self.q_going_in.put(curr_vehicle)
             total_vehicle += 1
 
-        self.num_vehicles_per_t = total_agent
+            
+        self.num_agents_per_t = total_agent
+        self.num_agents_per_t_list.append((total_agent, curr_t))
         self.num_vehicle_per_t = total_vehicle
+        self.num_vehicle_per_t_list.append((total_vehicle, curr_t))
 
     def avg_time_to_leave(self, time):
         ''' A method which returns the average time it took (In terms of timesteps)
