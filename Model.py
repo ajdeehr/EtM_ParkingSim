@@ -53,8 +53,8 @@ class Model(object):
 
     def get_time_str(self):
         '''A method which returns the string representation of time based on curr step'''
-        return str(C.DATA_START_TIME + int(self.step / C.DATA_TIME_STEP)) \
-                    + ":" + str(self.step % C.DATA_TIME_STEP) + "\n"
+        return str(C.DATA_START_TIME + int(self.step / C.DATA_MINS_IN_HR)) \
+                    + ":" + str(self.step % C.DATA_MINS_IN_HR) + "\n"
 
     def curr_stat(self):
         '''A method which returns the current statistics of the model at the current time step.'''

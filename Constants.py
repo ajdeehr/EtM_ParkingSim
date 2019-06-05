@@ -1,3 +1,5 @@
+import os       #For platform independent path.
+
 #Student data from PDF
 FTE_2016 = 8217  # Full time student Fall 2016
 FTE_2018 = 7731  # Full time student Fall 2018
@@ -64,9 +66,10 @@ MAX_PASSENGERS = 4
 PLUS_MINUS = 30
 
 #Dataset Constants
-DATA_FILE_NAME = "./Data/Demand_by_hr.csv"
-DATA_TIME_STEP = 60
-DATA_START_TIME = 10
+DATA_FILE_NAME = os.path.join("Data", "on_campus_2018.csv")
+DATA_TIME_STEP = 15
+DATA_START_TIME = 0
+DATA_MINS_IN_HR = 60
 
 #Simulation Variables
 TIME_STEP = 1       #Default simulation time step (1 Minute by default).
