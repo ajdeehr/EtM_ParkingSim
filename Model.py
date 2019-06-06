@@ -15,7 +15,6 @@
 #==============================================================================
 
 #---------------- Module General Import and Declarations ----------------------
-
 import numpy as N
 import random as R
 
@@ -33,32 +32,29 @@ import Constants as C
 import visualize as V
 import matplotlib.pyplot as plt
 
-import importlib
-
-importlib.reload(V)
-importlib.reload(Agent)
-
 
 class Model(object):
-
+	""" The Central Object in our simulation. """
+	
+	
     def log(self, str):
+	""" A method that prints a message with associated time step of when it was 
+		written
+	"""
         print(str, " | ", self.step, file=sys.stderr)
 
     def __init__(self, dt=0.25, trafficWeight=1):
-
+		""" The default constructor for the Model """
         self.trafficWeight = trafficWeight
 
         self.gate = Gate.Gate()
 
         self.campus_way_road = Road.Road(2, 2, 3)
 
-        # self.northGarage = Garage.Garage("North Garage", 300, 20, 20, 0, 1)
         self.south_garage = Garage.Garage("South Garage", num_spot=771,
                                          num_carpool_spot=23,
                                          num_handicapped_spot=20,
-                                         num_bike_spot=12)
-
-        self.numberGarage = 2
+                                         num_bike_spot=12, garage_width = 31)
 
         self.school = School.School()
 
@@ -73,7 +69,9 @@ class Model(object):
         self.utilization = []
 
     def get_time_str(self, curr_t):
-        '''A method which returns the string representation of time based on curr step'''
+        '''A method which returns the string representation of time based 
+			on curr step
+			'''
         hour, min = self.get_time(curr_t)
         return str(hour) + ":" + str(min) + "\n"
 
@@ -84,14 +82,19 @@ class Model(object):
         return hour, min
 
     def curr_stat(self):
-        '''A method which returns the current statistics of the model at the current time step.'''
-        print("\n\nTimestep", self.step, "**************************************", file=sys.stderr)
-        print("\nTime is", self.get_time_str(self.step), "\n", file=sys.stderr)
+        '''A method which returns the current statistics of the model at the 
+			current time step.
+		'''
+        print("\n\nTimestep", self.step, 
+				"**************************************", file=sys.stderr)
+        print("\nTime is", self.get_time_str(self.step), "\n", 
+				file=sys.stderr)
         print(self.gate, file=sys.stderr)
         print(self.campus_way_road, file=sys.stderr)
         print(self.south_garage, file=sys.stderr)
         print(self.school, file=sys.stderr)
-        print("\n***************************************************\n", file=sys.stderr)
+        print("\n***************************************************\n", 
+				file=sys.stderr)
 
     def run_session(self, day):
 
@@ -137,7 +140,8 @@ class Model(object):
 
             # Go though all the lanes, and leave garage.
             #Generate a congestion multiplier randomly within the range.
-            out_congestion = N.random.randint(C.ROAD_FLOW_MIN, C.ROAD_FLOW_MAX)
+            out_congestion = \
+                N.random.randint(C.ROAD_FLOW_MIN, C.ROAD_FLOW_MAX)
             for i in range(out_congestion * self.campus_way_road.lanes_out):
                 # leaving garage
                 cur_vehicle = self.south_garage.leave_garage()
@@ -162,13 +166,11 @@ class Model(object):
                  plt.ion()
                  self.plot_figure, self.plot_axis, self.plot_image = \
                      V.plot_campus(self)
-                 # self.plot_figure, self.plot_axis = V.plot_garage(self)
-                 # plt.show()
 
             else:
-                # pass
                 self.plot_figure, self.plot_axis, self.plot_image = \
-                    V.plot_campus(self, use_obj=(self.plot_figure, self.plot_axis, self.plot_image))
+                    V.plot_campus(self, use_obj=(self.plot_figure, 
+								self.plot_axis, self.plot_image))
 
             #Wait for the animation.
             plt.pause(.001)
@@ -184,24 +186,12 @@ def main1():
     V.plot_credits(model)
     V.plot_average(model)
 
-    #sigma = [3, 4, 5, 6]
-
-    # garage_diff = [-200, -100, 0, 100, 200]
-    #garage_diff = [0]
-    #for i in range(len(sigma)):
-    #    model = Model()
-    #    model.run_session("Mon")
-        # model.run_session_plot_out("Mon")
-        # model.run_session_plot_out_graphs(sigma)
-    #    V.plot_average(model)
 
 def main2():
     model = Model()
     model.run_session("Mon")
-    #V.plot_average(model)
     print(model.gate.avg_time_to_leave(100))
     print(model.school.avg_time_to_arrive(100))
-    #model.run_session_plot_out(num_days=30)
 
 
 #main1()

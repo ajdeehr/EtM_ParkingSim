@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-#==============================================================================
+# ==============================================================================
 #                        General Documentation
 """
 """
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #                       Additional Documentation
 # Modification History:
 # - 23 May 2019:  Original by Dewey Nguyen, CSS458 A,
@@ -12,9 +12,9 @@
 #
 # Notes:
 # - Written for Python 3.5.2.
-#==============================================================================
+# ==============================================================================
 
-#---------------- Module General Import and Declarations ----------------------
+# ---------------- Module General Import and Declarations ----------------------
 
 import numpy as N
 import queue
@@ -26,22 +26,19 @@ import Constants as C
 
 
 class ParkingSpot(object):
-'''
-A container that holds a vehicle, to be placed in the Garage class. Stores the
-vehicle reference for the vehicle that is place within, and the ID number for
-the spot in a garage, which is used for searching for the car.
-'''
+
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
         '''A method to get a string representation of a class'''
 
-        #Print the garage information.
+        # Print the garage information.
         out = "ParkingSpot: Dump ********************************" + "\n"
         out += "ParkingSpot: Spot ID == " + str(self.parking_number) + "\n"
         out += "ParkingSpot: Parking Type == " + str(self.parking_type) + "\n"
-        out += "ParkingSpot: Is Occupied == " + str(self.vehicle_occupied != None) + "\n"
+        out += "ParkingSpot: Is Occupied == " + str(
+            self.vehicle_occupied != None) + "\n"
         out += "*************************************************"
         return out
 
@@ -50,7 +47,7 @@ the spot in a garage, which is used for searching for the car.
         # parkingID
         self.parking_number = parking_number
 
-		#Represent the types of the vehicle.
+        # Represent the types of the vehicle.
         # VEHICLE_TYPE_CAR = 0     
         # VEHICLE_TYPE_BIKE = 1
         # VEHICLE_TYPE_HCAP = 2
@@ -60,24 +57,21 @@ the spot in a garage, which is used for searching for the car.
         # put the vehicle obj here
         self.vehicle_occupied = None
 
-	# Used for 
+    # Used for
     def get_parking_type(self):
-	""" Used for visualization, return a specific index in a color map
-		cmap_garage = ['b', 'g', 'c','y', 'r', 'k', '0.0']
-	"""
+        """ Used for visualization, return a specific index in a color map
+            cmap_garage = ['b', 'g', 'c','y', 'r', 'k', '0.0']
+        """
         if self.parking_type is None:
-            return 5 # returns black for a spot that no car can park in
+            return 5  # returns black for a spot that no car can park in
         else:
             if self.vehicle_occupied is None:
-                return 4 # returns red for unoccupied spot
+                return 4  # returns red for unoccupied spot
             else:
-                return self.parking_type 
+                return self.parking_type
 
 
 class Garage(object):
-'''
-A container that holds dictionaries of Parking Spots. The amount in each container is specified in the constructor. There are 2 queues, one for going in and one for coming out
-'''
 
     def __repr__(self):
         return self.__str__()
@@ -85,12 +79,14 @@ A container that holds dictionaries of Parking Spots. The amount in each contain
     def __str__(self):
         '''A method to get a string representation of a class'''
 
-        #Print the garage information.
+        # Print the garage information.
         out = "Garage: Dump *****************************" + "\n"
         out += "Garage: Number Filled == " + str(self.utilization()) + "\n"
         out += "Garage: Number of Spots == " + str(self.num_spot) + "\n"
-        out += "Garage: Number in going in Queue == " + str(self.q_going_in.qsize()) + "\n"
-        out += "Garage: Number in going out Queue == " + str(self.q_going_out.qsize()) + "\n"
+        out += "Garage: Number in going in Queue == " + str(
+            self.q_going_in.qsize()) + "\n"
+        out += "Garage: Number in going out Queue == " + str(
+            self.q_going_out.qsize()) + "\n"
         out += "******************************************"
         return out
 
@@ -100,80 +96,88 @@ A container that holds dictionaries of Parking Spots. The amount in each contain
         self.garage_name = garage_name
         self.num_spot = num_spot
 
-        self.blankspots = (int(N.ceil(self.num_spot / garage_width)) * garage_width) - self.num_spot
+        self.blankspots = (int(N.ceil(
+            self.num_spot / garage_width)) * garage_width) - self.num_spot
 
         self.num_carpool_spot = num_carpool_spot
         self.num_handicapped_spot = num_handicapped_spot
         self.num_bike_spot = num_bike_spot
-        self.num_normal_spot = num_spot - num_carpool_spot - num_handicapped_spot - num_bike_spot
-       
-		self.garage_width = garage_width # for visualization purposes
+        self.num_normal_spot = num_spot - num_carpool_spot - \
+                            num_handicapped_spot - num_bike_spot
 
-        self.curr_id = 1
-        self.spot_dict = {}
+        self.garage_width = garage_width  # for visualization purposes
 
-        #Initialize all the parking spaces.
-        self.init_parking_spaces(C.VEHICLE_TYPES["Car"], self.num_normal_spot)
-        self.init_parking_spaces(C.VEHICLE_TYPES["Bike"], self.num_bike_spot)
-        self.init_parking_spaces(C.VEHICLE_TYPES["HCap"], self.num_handicapped_spot)
-        self.init_parking_spaces(C.VEHICLE_TYPES["Carpool"], self.num_carpool_spot)
+    self.curr_id = 1
+    self.spot_dict = {}
 
-        # going in/out lane
-        self.q_going_in = queue.Queue()
-        self.q_going_out = queue.Queue()
+    # Initialize all the parking spaces.
+    self.init_parking_spaces(C.VEHICLE_TYPES["Car"], self.num_normal_spot)
+    self.init_parking_spaces(C.VEHICLE_TYPES["Bike"], self.num_bike_spot)
+    self.init_parking_spaces(C.VEHICLE_TYPES["HCap"], self.num_handicapped_spot)
+    self.init_parking_spaces(C.VEHICLE_TYPES["Carpool"], self.num_carpool_spot)
 
-    def utilization(self):
-        ''' A method which returns the utilization size (number of filled spots) '''
-
-        #Calculate the number of spots that are filled.
-        num_filled = 0
-        for dict in self.spot_dict:
-            for spot in self.spot_dict[dict]:
-                if self.spot_dict[dict][spot].vehicle_occupied is not None:
-                    #print(self.spot_dict[dict][spot].parking_number)
-                    num_filled += 1
-
-        return num_filled
+    # going in/out lane
+    self.q_going_in = queue.Queue()
+    self.q_going_out = queue.Queue()
 
 
-    def init_parking_spaces(self, spot_type, size):
-        ''' A method which initializes the list for the parking types'''
+def utilization(self):
+    ''' A method which returns the utilization size (number of filled spots) '''
 
-        self.spot_dict[spot_type] = {}
+    # Calculate the number of spots that are filled.
+    num_filled = 0
+    for dict in self.spot_dict:
+        for spot in self.spot_dict[dict]:
+            if self.spot_dict[dict][spot].vehicle_occupied is not None:
+                # print(self.spot_dict[dict][spot].parking_number)
+                num_filled += 1
 
-        #Create and initiate parking spots.
-        for i in range(size):
-            self.spot_dict[spot_type][self.curr_id] = ParkingSpot(self.curr_id, spot_type)
-            self.curr_id += 1
+    return num_filled
 
-    def leave_garage(self):
-        ''' A method which returns the vehicle if any exist, if not it returns None'''
-        if self.q_going_out.qsize() == 0:
-            return None
-        else:
-            return self.q_going_out.get()
 
-    #Find the agent's car and put it in the out queue.
-    def find_car(self, agent):
-        #Add the agent to the leaving car.
-        for dict in self.spot_dict:
-            if agent.parking_spot_id in self.spot_dict[dict]:
-                org_id = agent.parking_spot_id
+def init_parking_spaces(self, spot_type, size):
+    ''' A method which initializes the list for the parking types'''
 
-                agent.parking_spot_id = 0
-                self.spot_dict[dict][org_id].vehicle_occupied.add_agent(agent)
+    self.spot_dict[spot_type] = {}
 
-                vehicle = self.spot_dict[dict][org_id].vehicle_occupied
-                #Check if all the passengers are here to leave.
-                if len(vehicle.agents) == vehicle.num_of_agents:
-                    self.q_going_out.put(vehicle)
-                    self.spot_dict[dict][org_id].vehicle_occupied = None
+    # Create and initiate parking spots.
+    for i in range(size):
+        self.spot_dict[spot_type][self.curr_id] = ParkingSpot(self.curr_id,
+                                                              spot_type)
+        self.curr_id += 1
 
-    def find_parking_spot(self, vehicle):
-        ''' Find spot, if not successful, return -1. '''
-        for spot in self.spot_dict[vehicle.type]:
-            if self.spot_dict[vehicle.type][spot].vehicle_occupied == None:
-                self.spot_dict[vehicle.type][spot].vehicle_occupied = vehicle
-                return self.spot_dict[vehicle.type][spot].parking_number
 
-        return -1
+def leave_garage(self):
+    ''' A method which returns the vehicle if any exist, if not it returns None
+    '''
+    if self.q_going_out.qsize() == 0:
+        return None
+    else:
+        return self.q_going_out.get()
+
+
+# Find the agent's car and put it in the out queue.
+def find_car(self, agent):
+    # Add the agent to the leaving car.
+    for dict in self.spot_dict:
+        if agent.parking_spot_id in self.spot_dict[dict]:
+            org_id = agent.parking_spot_id
+
+            agent.parking_spot_id = 0
+            self.spot_dict[dict][org_id].vehicle_occupied.add_agent(agent)
+
+            vehicle = self.spot_dict[dict][org_id].vehicle_occupied
+            # Check if all the passengers are here to leave.
+            if len(vehicle.agents) == vehicle.num_of_agents:
+                self.q_going_out.put(vehicle)
+                self.spot_dict[dict][org_id].vehicle_occupied = None
+
+
+def find_parking_spot(self, vehicle):
+    ''' Find spot, if not successful, return -1. '''
+    for spot in self.spot_dict[vehicle.type]:
+        if self.spot_dict[vehicle.type][spot].vehicle_occupied == None:
+            self.spot_dict[vehicle.type][spot].vehicle_occupied = vehicle
+            return self.spot_dict[vehicle.type][spot].parking_number
+
+    return -1

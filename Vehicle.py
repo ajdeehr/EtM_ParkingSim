@@ -34,7 +34,8 @@ class Vehicle(object):
         out = "Vehicle: Dump ********************************" + "\n"
         out += "Vehicle: Type == " + str(self.type) + "\n"
         out += "Vehicle: State == " + str(self.state) + "\n"
-        out += "Vehicle: Number of Agents in Vehicle == " + str(len(self.agents)) + "\n"
+        out += "Vehicle: Number of Agents in Vehicle == " + \
+               str(len(self.agents)) + "\n"
         out += "Vehicle: Tota number of Agents == " + str(self.num_of_agents)
         out += "*********************************************"
         return out
@@ -43,21 +44,21 @@ class Vehicle(object):
         '''Default Constructor'''
 
         self.environment = environment
-        #Set the vehicle type by randomly assigning based on the constants.
-        if rand.random() <  C.PERCENT_BIKE:         #If a Bike.
+        # Set the vehicle type by randomly assigning based on the constants.
+        if rand.random() <  C.PERCENT_BIKE:         # If a Bike.
             self.type = C.VEHICLE_TYPE_BIKE
-        elif rand.random() <  C.PERCENT_HCAP:       #If a Handicapped.
+        elif rand.random() <  C.PERCENT_HCAP:       # If a Handicapped.
             self.type = C.VEHICLE_TYPE_HCAP
-        elif rand.random() < C.PERCENT_CARPOOL:     #If Carpool.
+        elif rand.random() < C.PERCENT_CARPOOL:     # If Carpool.
             self.type = C.VEHICLE_TYPE_CARPOOL
-        else:                                       #If a Regular Car.
+        else:                                       # If a Regular Car.
             self.type = C.VEHICLE_TYPE_CAR
 
 
-        #The set which contains all the agents.
+        # The set which contains all the agents.
         self.agents = set()
 
-        #added after first milestne meetup (wed 5/29)
+        # added after first milestne meetup (wed 5/29)
         self.num_of_agents = 0
 
     def add_agent(self, agent):
