@@ -87,7 +87,7 @@ MAX_PASSENGERS = 4
 PLUS_MINUS = 30
 
 #Dataset Constants
-DATA_FILE_NAME = os.path.join("Data", "on_campus_2018.csv")
+DATA_FILE_NAME = os.path.join("Data", "on_campus.csv")
 DATA_TIME_STEP = 15
 DATA_START_TIME = 0
 DATA_MINS_IN_HR = 60
