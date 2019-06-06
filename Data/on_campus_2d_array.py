@@ -1,3 +1,37 @@
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+#=======================================================================
+#                        General Documentation
+
+
+""" This progam is used to scrape class schedule of UWB in fall 2018.
+   It read the CSV data file create by the scraping program, and print
+   another CSV files and return some a 2D array of number of students
+   in class each 15 minutes
+   
+   This program has been merged to the scraping, NOT IN USE ANYMORE
+    """
+
+#-----------------------------------------------------------------------
+#                       Additional Documentation
+#
+#
+# Modification History:
+# - 30 May 2019:  Original by Xavier, UW Bothell.
+#    Passed passably reasonable tests.
+#
+# Notes:
+# - Written for Python 3.x.
+# - Module docstrings can be tested using the doctest module.  To
+#   test, execute "python computational_error.py".
+# - See import statements throughout for more information on non-
+#   built-in packages and modules required.
+#
+# Copyright (c) 2019 by Xavier Cheng.
+#=======================================================================
+
+#========================== Imported module ==========================
+
 import numpy as np
 import numpy.ma as ma
 import csv
@@ -5,19 +39,25 @@ import numpy.random as r
 
 def on_campus_arr(filename):
     schedule = []
+    
+    # read the CSV file
     with open(filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for line in csv_reader:
-            schedule.append(line[1])
-            schedule.append(line[-1])
+            schedule.append(line[1])    # day and time
+            schedule.append(line[-1])   # the number of student enrolled
             
         schedule = np.asarray(schedule)
         schedule = schedule.reshape((-1,2))
+        
+        # mask any item without meating day and time
         masked = ma.masked_where(schedule == 'to be arranged',  schedule)
         masked = ma.masked_where(masked == '0', masked)
         
         unmasked= []
         index = 0
+        
+        #generate a list with every non masked data
         for item in masked:
             if ma.is_masked(item) == False:
                 unmasked.append(schedule[index])
@@ -27,6 +67,7 @@ def on_campus_arr(filename):
         
         final_schedule = np.empty((unmasked.shape[0],4),dtype = 'U14')
         
+        # Split the day and time into different array element
         for i in range(len(unmasked)):
             
             final_schedule[i,3] = unmasked[i,1]
@@ -43,6 +84,8 @@ def on_campus_arr(filename):
             final_schedule[i,1] = unmasked[i,0]
             final_schedule[i,2] = unmasked[i,1]
             
+            # modify the time information to a consistent menthod
+            # that can be read and calculated
             if final_schedule[i,2][-1] == 'P':
                 final_schedule[i,1] = int(final_schedule[i,1]) + 1200
                 final_schedule[i,2] = int(final_schedule[i,2][0:-1]) + 1200
@@ -68,8 +111,7 @@ def on_campus_arr(filename):
                 if r.randint(2) == 0:
                     final_schedule[i,2] = final_schedule[i,2][0:-2] + '15'
                 else:
-                    final_schedule[i,2] = final_schedule[i,2][0:-2] + '30'                
-        
+                    final_schedule[i,2] = final_schedule[i,2][0:-2] + '30'
                 
             if (final_schedule[i,2][-2:] == '35' or final_schedule[i,2][-2:] == '40'):
                 if r.randint(2) == 0:
@@ -113,25 +155,27 @@ def on_campus_arr(filename):
     # zeros in the 2D array
     
     on_campus = np.zeros((96,5))
-    
+
+    # a function that will be called when needing
+    # to add student to a time slot
     def save2arr(day,in_time,out_time,destination,value):
         start = int(in_time) 
         end = int(out_time)
         time1 = int((start - BEGINNING)/STEPS)
         time2 = int((end - BEGINNING)/STEPS)
     
-        
     #    print(start,end,time1,time2)
         time = range(time1,time2)
     #    print(time1,time2)
         for i in time:
-    #        print(i)
             destination[i][day] += int(value)
-    
+
+
+    # Selete day and time, and add the studnet into the
+    # corrosponding 2D array cell
+
     #M = [0], T = [1], W = [2], TH = [3], F = [4]
-    
     for row in final_schedule:
-    #    print(row[0])
     
         for day in range(len(row[0])):
             
