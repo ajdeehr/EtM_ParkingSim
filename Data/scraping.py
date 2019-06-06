@@ -45,11 +45,15 @@ def scraping(year):
     link_list = []
     output = []
     
+    # Get the UWB catalog website 
     page = requests.get('https://www.uwb.edu/registration/time/aut{}'.format(year))
+    # Parse HTML
     soup = bs.BeautifulSoup(page.text, 'html.parser')
     
+    # Find every line that has that part of URL
     for link in soup.find_all('a', attrs={'href': re.compile("^http://www.washington.edu/students/timeschd/B/")}):
         
+        # Get the exact url without the #
         url = link.get('href')
         
         for i in range(len(url)):
@@ -58,23 +62,33 @@ def scraping(year):
                 break;
     
         link_list.append(url)
-        
+    
+    # find the div class with the specific name and 
+    # print that last element of li
+    # that is the quarter and year information
+            
     quarter = soup.find(class_='w-Breadcrumbs')
     quarter = quarter.find_all('li')
     quarter = quarter[-1].text
     print(quarter)
-            
+    
+    # start scraping data from the links we have            
     for weburl in link_list:
     
         page = requests.get(weburl)
         soup = bs.BeautifulSoup(page.text, 'html.parser')
         
+        # See if the website is open correctly
         check_availability = soup.find('h1').text
         check_availability = " ".join(check_availability.split())
         
+        # If error message occur, just skip
         if (check_availability == 'Time Schedule - No Courses Offered'):
             continue
-        
+            
+        # get the correct format of names    
+        # print the subject name    
+        # print the subject rul
         subject = soup.find('h2')
         subject = subject.text
         sub_start = subject.index('(')
@@ -82,6 +96,10 @@ def scraping(year):
         print(subject)
         print(weburl)
         
+        # Every class information is store as one line
+        # Thus we just grap that line
+        # crop the string size to fit the data into
+        # different array cell.
         class_list = soup.find_all('pre')
         class_list = class_list[1:]        
         
@@ -106,19 +124,22 @@ def scraping(year):
     
     schedule = []
        
+    # read the array
     for line in output:
-        
         schedule.append(line[1])
         schedule.append(line[-1])
                 
     schedule = np.asarray(schedule)
     schedule = schedule.reshape((-1,2))
-
+    
+    # mask any item without meating day and time
     masked = ma.masked_where(schedule == 'to be arranged',  schedule)
     masked = ma.masked_where(masked == '0', masked)
         
     unmasked= []
     index = 0
+    
+    #generate a list with every non masked data
     for item in masked:
         if ma.is_masked(item) == False:
             unmasked.append(schedule[index])
@@ -128,6 +149,7 @@ def scraping(year):
         
     final_schedule = np.empty((unmasked.shape[0],4),dtype = 'U14')
         
+    # Split the day and time into different array element
     for i in range(len(unmasked)):
         
         final_schedule[i,3] = unmasked[i,1]
@@ -143,6 +165,9 @@ def scraping(year):
         
         final_schedule[i,1] = unmasked[i,0]
         final_schedule[i,2] = unmasked[i,1]
+        
+        # modify the time information to a consistent menthod
+        # that can be read and calculated
         
         if final_schedule[i,2][-1] == 'P':
             final_schedule[i,1] = int(final_schedule[i,1]) + 1200
@@ -241,6 +266,9 @@ def scraping(year):
     
     on_campus = np.zeros((96,5))
     
+    
+    # a function that will be called when needing
+    # to add student to a time slot
     def save2arr(day,in_time,out_time,destination,value):
         start = int(in_time) 
         end = int(out_time)
@@ -251,6 +279,9 @@ def scraping(year):
         for i in time:
             destination[i][day] += int(value)
     
+    
+    # Selete day and time, and add the studnet into the
+    # corrosponding 2D array cell
     #M = [0], T = [1], W = [2], TH = [3], F = [4]
     
     for row in final_schedule:
@@ -274,65 +305,12 @@ def scraping(year):
             else:
                 continue
                 
-    on_campus = (on_campus*(C.DRIVE_ALONE_AVG + C.CARPOOL_AVG) * 774/2020 * (r.uniform(0,0.5))).astype(int)
-    #print(on_campus)   
-    #on_campus = on_campus[29:-4] # 7 to 23
-
-
-#    print(on_campus[50])
-
-#    print("std: ",std, "\nmean: ",mean)   
-    '''
-    on_campus_per_min = []
-    for row in on_campus:
-        row = row/15
-        row = np.tile(row,15)
-        on_campus_per_min.append(row)
-    on_campus_per_min = np.asarray(on_campus_per_min)
-    on_campus_per_min = on_campus_per_min.astype(int)
-    on_campus_per_min = on_campus_per_min.reshape(-1,5)
-    '''    
-    with open("on_campus_{}.csv".format(year),"w+") as my_csv:
+    on_campus = (on_campus*(C.DRIVE_ALONE_AVG + C.CARPOOL_AVG) * 774/2020 * (r.normal(0,0.5))).astype(int)
+ 
+    # Output the 2D array as a CSV file
+    with open("on_campus.csv","w+") as my_csv:
         csvWriter = csv.writer(my_csv,delimiter=',')
         csvWriter.writerows(on_campus)
-    '''
-    with open("on_campus_per_min{}.csv".format(year),"w+") as my_csv:
-        csvWriter = csv.writer(my_csv,delimiter=',')
-        csvWriter.writerows(on_campus_per_min)    
-    
-    with open("new_file_{}.csv".format(year),"w+") as my_csv:
-        csvWriter = csv.writer(my_csv,delimiter=',')
-        csvWriter.writerows(output)
-    
-    with open("file_readable_schedule_{}.csv".format(year),"w+") as my_csv:
-        csvWriter = csv.writer(my_csv,delimiter=',')
-        csvWriter.writerows(final_schedule)      
-    '''
+
     return on_campus
-#    return on_campus_per_min
-'''
-history = []
-years = np.asarray(list(range(2017,2019)))
-for year in years:
-    history.append(scraping(year))
 
-#history = np.asarray(history).reshape((6,96,5))
-
-#print(history)
-std = np.zeros(np.size(history[0])).reshape(np.shape(history[0]))
-mean = np.zeros(np.size(history[0])).reshape(np.shape(history[0]))
-
-temp = []
-for row in range(len(history[0])):
-    for col in range(len(history[0][0])):
-        for sli in range((len(history))):
-            item = history[sli][row][col]
-            temp.append(item)
-#            print(temp)
-        temp = np.asarray(temp)
-#        print(temp2.std())
-        std[row][col] = np.std(temp)  
-        mean[row][col] = np.mean(temp)
-        temp = []  
-#print(final)
-'''
