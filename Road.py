@@ -54,6 +54,12 @@ class Road(object):
         self.length = 3
         self.width = 40
 
+    def reenter_road(self, vehicle, curr_t):
+        """ A method for adding the vehicle back to the road. It specifically is
+        called when the vehicle arrives in the road and before reaching school"""
+        self.q_going_in.append((vehicle, (curr_t - self.min_t_to_pass)))
+
+
     def enter_road(self, vehicle, curr_t):
         """ A method for adding the vehicle to the road. It specifically is
             called when the vehicle arrives in the road and before reaching
@@ -71,7 +77,7 @@ class Road(object):
 
         # If the time passed since enterance is less than min_t_to_pass return
         # None.
-        elif curr_t - self.q_going_in[0][1] <= self.min_t_to_pass:
+        if curr_t - self.q_going_in[0][1] <= self.min_t_to_pass:
             return None
 
         # If vehicle is available to exit to the parking lot, remove and return

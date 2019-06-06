@@ -18,6 +18,7 @@
 #---------------- Module General Import and Declarations ----------------------
 import numpy as N
 import Constants as C
+import Data
 
 class Agent(object):
     curr_agent_id = 0
@@ -44,6 +45,17 @@ class Agent(object):
 
             self.credits = N.floor(sigma * (1 - curr_t / 1440) * N.random.randn() + 15 * (1 - curr_t / 1440))
 
+
+
+		num_steps = Data.get_num_steps()
+        #After mid day (Noon)
+        if (curr_t > num_steps * C.DATA_MID_DAY_MULT):
+            self.credits = N.floor(1 * (1 - curr_t / num_steps) \
+                * N.random.randn() + 15 * (1 - curr_t / num_steps))
+
+        #After the evening (8 am)
+        #if (curr_t > num_steps * C.DATA_MID_DAY_MULT):
+        #    self.credits = C.DATA_LATE_CLASS_CREDITS
 
         #Set the number of hours the student is staying.
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)

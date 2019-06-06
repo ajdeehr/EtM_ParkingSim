@@ -83,119 +83,80 @@ def plot_util(modelobj, sigmain=5):
 
 def plot_average(modelobj):
     """
-    This Method grabs the wait times coming into the School and into the Garage,
+    This Method grabs the wait times coming into the School and into the Garage
     as well as leaving, for each time step. THis function displays them
     all separately.
     """
     times = N.arange(Data.get_num_steps())
-    total_ticks = 10
-    ticks = [0]
-    for t in range(total_ticks):
-        ticks.append(ticks[-1] + (Data.get_num_steps() / total_ticks))
+    times_dec = []
 
-    ticks_str = []
-    for t in ticks: ticks_str.append[modelobj.get_time_str(t)]
+    for t in times:
+        hour, min = modelobj.get_time(t)
+        times_dec.append(float(hour) + float(min) / 100.0) 
+			#Create a dec version of time.
 
-    # Get average waiting times.
+    #Get average waiting times.
     school_wait = N.array((times))
     gate_wait = N.array((times))
     school_num = N.array((times))
     gate_num = N.array((times))
-
-
     for i in times:
         school_wait[i] = modelobj.school.avg_time_to_arrive(i)
         gate_wait[i] = modelobj.gate.avg_time_to_leave(i)
         school_num[i] = modelobj.school.agents_arrived_at_t(i)
         gate_num[i] = modelobj.gate.num_leaving[i]
 
-    # Plot Average time to find parking.
+
+
+    #Plot Average time to find parking.
     plt.figure(8)
-    plt.plot(times, school_wait)
-    plt.title("Average Waiting Time to find parking")
-    plt.xlabel("Time")
-    plt.xticks(ticks, ticks_str)
+    #plt.scatter(times_dec, school_wait)    #Regular hours.
+    plt.scatter(times, school_wait)
+    plt.title("Average Waiting Time to find parking (From gate to school)")
+    plt.xlabel("Time (Hour)")
     plt.ylabel("Average Wait Time")
     plt.savefig("EtM_PS_AWT_GATE_TO_SCHOOL.png", dpi=300)
 
-    # Plot Average time to leave campus.
+    #Plot Average time to leave campus.
     plt.figure(9)
-    plt.plot(times, gate_wait)
+    #plt.scatter(times_dec, gate_wait)    #Regular hours.
+    plt.scatter(times, gate_wait)
     plt.title("Average Waiting Time to leave school (From school to gate)")
-    plt.xlabel("Time")
+    plt.xlabel("Time (Hour)")
     plt.ylabel("Average Wait Time")
     plt.savefig("EtM_PS_AWT_SCHOOL_TO_GATE.png", dpi=300)
 
-    # Plot Average time to find parking.
+    #Plot Average time to find parking.
     plt.figure(10)
-    plt.plot(times, school_num)
+    #plt.bar(times_dec, school_num)      #Regular hours.
+    plt.bar(times, school_num)
     plt.title("Number of students arriving to school")
-    plt.xlabel("Time")
+    plt.xlabel("Time (Hour)")
     plt.ylabel("Number Of Students")
     plt.savefig("EtM_PS_SCHOOL_ARRIVING.png", dpi=300)
 
-    # Plot Average time to leave campus.
+    #Plot Average time to leave campus.
     plt.figure(11)
-    plt.plot(times, gate_wait)
+    #plt.bar(times_dec, gate_wait)
+    plt.bar(times, gate_wait)
     plt.title("Number of students leaving school")
-    plt.xlabel("Time")
+    plt.xlabel("Time (Hour)")
     plt.ylabel("Number Of Students")
     plt.savefig("EtM_PS_GATE_LEAVING.png", dpi=300)
 
-
-
-def plot_totals(modelobj):
-    """
-    This method
-    """
-    plt.figure(3)
-    days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-    time = (N.arange(0, len(Data.table)) * C.TIME_STEP) / 60
-
-    for i in range(5):
-        plt.plot(time[:], Data.table[:, i], label=days[i])
-    plt.legend()
-    plt.title("Number of Students Enrolled In A Class at Each Time")
-    plt.xlabel("Time (Hours)")
-    plt.ylabel("Number of Students enrolled in a Class")
-    plt.savefig("EtM_PS_Stud_Enrolled.png", dpi=300)
-    plt.show()
-
-    plt.figure(7)
-    times = (N.arange(0, 96)) * 15
-    agents = modelobj.gate.num_agents_per_t_list
-    vehicles = modelobj.gate.num_vehicle_per_t_list
-    plt.plot(times, agents[:, 0])
-    plt.plot(times, vehicles[:, 0])
-    plt.title("Total Vehicles and Agents Generated in the Simulation")
-    plt.xlabel("Time")
-    plt.ylabel("Total Vehicles and Agents Generated")
-    plt.savefig("EtM_PS_Totals.png", dpi=300)
-    # Updated, fix from code
-
-
-def plot_times(modelobj):
-    times = (N.arange(0, len(Data.table)) * C.TIME_STEP) / 60
-    time = N.arange((int(1440 / C.TIME_STEP)))
-
-    avg_time = modelobj.school.avg_time_to_arrive(time)
-    plt.figure(6)
-    plt.plot(times, avg_time)
-    plt.title("Average Time to Arrival at Each Time")
-    plt.xlabel("Time")
-    plt.ylabel("Average Time to Arrival")
-    plt.savefig("EtM_PS_Avg_Arrival.png", dpi=300)
-
-
 def plot_campus(modelobj, use_obj=None):
+""" This is a method that prints out the full garage to a matplotlib screen
+	and will continously update as long as use_obj are not None
+	Made from https://github.com/jwblin/ab_cattle/blob/solution/visualize.py
+"""
     global t
 
     garage_size = int((N.ceil(modelobj.south_garage.num_spot /
                               modelobj.south_garage.garage_width)) *
                       modelobj.south_garage.garage_width)
 
-    cmap_garage = ['b', 'g', 'c', 'y', 'r', 'k', '0.0']
-    cmap_road = ['y', 'c', 'b', 'g', 'r', 'k', '0.8']
+    cmap_garage = ['red', 'brown', 'yellow', 'blue', 'green', 'k', '0.0']
+    cmap_road = ['red', 'brown', 'yellow', 'blue', 'green', 'k', '0.8']
 
     if use_obj == None:
         fig = plt.figure(figsize=(6, 6))
@@ -216,8 +177,8 @@ def plot_campus(modelobj, use_obj=None):
                           w_southG / tot_horiz, l_southG / tot_vert),
                          frameon=False))
 
-        axs.append(fig.add_axes((.0, .0, w_road / tot_horiz, l_road / tot_vert),
-                                frameon=False))
+        axs.append(fig.add_axes((.0, .0, w_road / tot_horiz, l_road / tot_vert)\
+					, frameon=False))
 
         axs.append(fig.add_axes((.7, .85, .2, .1), frameon=False))
 

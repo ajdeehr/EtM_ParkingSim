@@ -67,9 +67,9 @@ STATE_MOVING = 0  # Current state of the vehicle in the simulation.
 STATE_PARKED = 1
 STATE_LEFT = 2
 
-ROAD_FLOW_MIN = 5           #Minimum number of vehicles who enter or leave 
+ROAD_FLOW_MIN = 20          #Minimum number of vehicles who enter or leave 
 							# in a t.
-ROAD_FLOW_MAX = 10          #Maximum number of vehicles who eenter or leave 
+ROAD_FLOW_MAX = 50          #Maximum number of vehicles who eenter or leave 
 							# in a t.
 # Variables for the Agent class.
 AGENT_STUDENT = 0
@@ -87,10 +87,13 @@ MAX_PASSENGERS = 4
 PLUS_MINUS = 30
 
 #Dataset Constants
-DATA_FILE_NAME = os.path.join("Data", "on_campus.csv")
-DATA_TIME_STEP = 15
-DATA_START_TIME = 0
-DATA_MINS_IN_HR = 60
+DATA_FILE_NAME = os.path.join("data", "on_campus_2018.csv")
+DATA_TIME_STEP = 15                     #Data's time step.
+DATA_START_TIME = 0                     #Starting time.
+DATA_MINS_IN_HR = 60                    #Number of minutes in an hr.
+DATA_MID_DAY_MULT = 0.5                 #Mid day time step multiplier (Get 12pm).
+DATA_LATE_CLASS_MULT = 0.66             #Late classes time multiplier (Get 8pm).
+DATA_LATE_CLASS_CREDITS = 1             #Number of credits if coming late.
 
 #Simulation Variables
 TIME_STEP = 1       #Default simulation time step (1 Minute by default).

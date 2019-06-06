@@ -133,6 +133,11 @@ class Gate(object):
             for agent in vehicle.agents:
                 num_agents_leaving += 1
                 sum_time_to_leave += agent.time_spent(curr_t)
+				
+				#Increase the total agents left.
+                self.total_agents_left += 1
+
+            #Increase the total vehicles left.
 
             # Keep track of total agents and vehicles that left.
             self.total_agents_left += num_agents_leaving
@@ -172,7 +177,7 @@ class Gate(object):
             if curr_vehicle.is_single_passenger():
 
                 # make a a new agent
-                agent = Agent.Agent()
+                agent = Agent.Agent(curr_t)
 
                 # record time_start
                 agent.time_start(curr_t)
@@ -195,7 +200,7 @@ class Gate(object):
                 for j in range(
                         rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
                     # make a a new agent
-                    agent = Agent.Agent()
+                    agent = Agent.Agent(curr_t)
 
                     # record time_start
                     agent.time_start(curr_t)
@@ -239,13 +244,14 @@ class Gate(object):
         num_times = 0
         if time in self.num_leaving:
             num_times = self.num_leaving[time]
+		num_times = self.agents_arrived_at_t(time)
 
         # If zero, just return the sum.
         if num_times == 0:
             return sum_times
 
         # Calculate average and return it.
-        return sum_times / num_times
+        return avg
 
     def agents_arrived_at_t(self, time):
         ''' A method which returns the number of agents which left at time. '''

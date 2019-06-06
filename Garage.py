@@ -111,10 +111,14 @@ class Garage(object):
         self.spot_dict = {}
     
         # Initialize all the parking spaces.
-        self.init_parking_spaces(C.VEHICLE_TYPES["Car"], self.num_normal_spot)
-        self.init_parking_spaces(C.VEHICLE_TYPES["Bike"], self.num_bike_spot)
-        self.init_parking_spaces(C.VEHICLE_TYPES["HCap"], self.num_handicapped_spot)
-        self.init_parking_spaces(C.VEHICLE_TYPES["Carpool"], self.num_carpool_spot)
+        self.init_parking_spaces(\
+					C.VEHICLE_TYPES["Car"], self.num_normal_spot)
+        self.init_parking_spaces(\
+					C.VEHICLE_TYPES["Bike"], self.num_bike_spot)
+        self.init_parking_spaces(\
+					C.VEHICLE_TYPES["HCap"], self.num_handicapped_spot)
+        self.init_parking_spaces(\
+					C.VEHICLE_TYPES["Carpool"], self.num_carpool_spot)
     
         # going in/out lane
         self.q_going_in = queue.Queue()

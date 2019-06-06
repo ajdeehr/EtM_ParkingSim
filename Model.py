@@ -114,6 +114,9 @@ class Model(object):
                 if vehicle is not None:
                     # enter road
                     self.campus_way_road.enter_road(vehicle, self.step)
+				else:   #If not parking spots were found.
+                        #Go back to the road to find parking.
+                    self.campus_way_road.reenter_road(cur_vehicle, self.step)
 
                 # enter garage
                 cur_vehicle = self.campus_way_road.arrive_garage(self.step)
