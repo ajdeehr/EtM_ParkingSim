@@ -8,7 +8,7 @@
 # Modification History:
 # - 23 May 2019:  Original by Dewey Nguyen, CSS458 A,
 #   University of Washington Bothell.
-# - Subsequent Revisions from Xavier Cheng, Ardalan Ahanchi, 
+# - Subsequent Revisions from Xavier Cheng, Ardalan Ahanchi,
 #   and Adam Deehring
 #
 # Notes:
@@ -16,7 +16,7 @@
 #==============================================================================
 
 #---------------- Module General Import and Declarations ----------------------
-import os       #For platform independent path.
+from pathlib import Path      #For platform independent path.
 
 #Student data from PDF
 FTE_2016 = 8217  # Full time student Fall 2016
@@ -50,10 +50,10 @@ TOTAL_CAR = TOTAL_STUDENT_CAR + FACULTY_AVG + STAFF_AVG
 # Variables For the Vehicle Class.
 PERCENT_BIKE = 0.05  # The probablitiy of generating bike instead of a car.
 PERCENT_HCAP = 0.05  # Probability of the Car to belong to a disabled person.
-#PERCENT_CARPOOL = 0.05  # Probability of the Car having more than 
+#PERCENT_CARPOOL = 0.05  # Probability of the Car having more than
 						 # One passenger.
 #(8217+7731)/2 = 7974, (0.136+0.088)/2 = 0.113
-PERCENT_CARPOOL = 0.113  # Probability of the Car having more than 
+PERCENT_CARPOOL = 0.113  # Probability of the Car having more than
 						 # One passenger.
 
 VEHICLE_TYPE_CAR = 0  # Represent the types of the vehicle.
@@ -67,9 +67,9 @@ STATE_MOVING = 0  # Current state of the vehicle in the simulation.
 STATE_PARKED = 1
 STATE_LEFT = 2
 
-ROAD_FLOW_MIN = 20          #Minimum number of vehicles who enter or leave 
+ROAD_FLOW_MIN = 20          #Minimum number of vehicles who enter or leave
 							# in a t.
-ROAD_FLOW_MAX = 50          #Maximum number of vehicles who eenter or leave 
+ROAD_FLOW_MAX = 50          #Maximum number of vehicles who eenter or leave
 							# in a t.
 # Variables for the Agent class.
 AGENT_STUDENT = 0
@@ -87,13 +87,17 @@ MAX_PASSENGERS = 4
 PLUS_MINUS = 30
 
 #Dataset Constants
-DATA_FILE_NAME = os.path.join("data", "on_campus_2018.csv")
+DATA_FOLDER_PATH = Path("data")
+DATA_FILE_NAME = DATA_FOLDER_PATH / "on_campus_2018.csv"
 DATA_TIME_STEP = 15                     #Data's time step.
 DATA_START_TIME = 0                     #Starting time.
 DATA_MINS_IN_HR = 60                    #Number of minutes in an hr.
 DATA_MID_DAY_MULT = 0.5                 #Mid day time step multiplier (Get 12pm).
 DATA_LATE_CLASS_MULT = 0.66             #Late classes time multiplier (Get 8pm).
 DATA_LATE_CLASS_CREDITS = 1             #Number of credits if coming late.
+
+#Visualization contants.
+VIS_OUT_PATH = Path("visualization")
 
 #Simulation Variables
 TIME_STEP = 1       #Default simulation time step (1 Minute by default).

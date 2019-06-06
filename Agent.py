@@ -8,7 +8,7 @@
 # Modification History:
 # - 24 May 2019:  Original by Adam Deehring, CSS458 A,
 #   University of Washington Bothell.
-# - Subsequent Revisions from Xavier Cheng, Ardalan Ahanchi, 
+# - Subsequent Revisions from Xavier Cheng, Ardalan Ahanchi,
 #   and Dewey Nguyen
 #
 # Notes:
@@ -41,21 +41,20 @@ class Agent(object):
     def __init__(self, curr_t, stayhours = 8, sigma = 5):
         '''Default constructor which creates the object with the hours staying'''
 
-        if (curr_t > 1440/2):
+        #Get the total number of steps.
+        num_steps = Data.get_num_steps()
 
-            self.credits = N.floor(sigma * (1 - curr_t / 1440) * N.random.randn() + 15 * (1 - curr_t / 1440))
+        #Define the credits.
+        self.credits = N.floor(3 * N.random.randn() + 15)
 
-
-
-		num_steps = Data.get_num_steps()
         #After mid day (Noon)
         if (curr_t > num_steps * C.DATA_MID_DAY_MULT):
             self.credits = N.floor(1 * (1 - curr_t / num_steps) \
                 * N.random.randn() + 15 * (1 - curr_t / num_steps))
 
-        #After the evening (8 am)
-        #if (curr_t > num_steps * C.DATA_MID_DAY_MULT):
-        #    self.credits = C.DATA_LATE_CLASS_CREDITS
+        #After the evening (8 pm)
+        if (curr_t > num_steps * C.DATA_LATE_CLASS_MULT):
+            self.credits = C.DATA_LATE_CLASS_CREDITS
 
         #Set the number of hours the student is staying.
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)

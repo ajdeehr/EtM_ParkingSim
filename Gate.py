@@ -126,39 +126,35 @@ class Gate(object):
         num_agents_leaving = 0
         sum_time_to_leave = 0
 
-        # Go through every agent leaving and calculate the sum of times.
+        #Go through every agent leaving and calculate the sum of times.
         while self.q_going_out.qsize() != 0:
             vehicle = self.q_going_out.get()
 
             for agent in vehicle.agents:
                 num_agents_leaving += 1
                 sum_time_to_leave += agent.time_spent(curr_t)
-				
-				#Increase the total agents left.
+
+                #Increase the total agents left.
                 self.total_agents_left += 1
 
             #Increase the total vehicles left.
-
-            # Keep track of total agents and vehicles that left.
-            self.total_agents_left += num_agents_leaving
             self.total_vehicles_left += 1
 
-        # Reset the going out queue.
+        #Reset the going out queue.
         self.q_going_out = queue.Queue()
 
-        # Add the new data to the two dictionaries (For stats.)
-
-        # Add sum of time from the school to the gate.
+        #Add sum of time from the school to the gate.
         if curr_t not in self.sum_t_to_gate:
             self.sum_t_to_gate[curr_t] = 0
 
         self.sum_t_to_gate[curr_t] += sum_time_to_leave
 
-        # Add number leaving from the school to the gate.
+        #Add number leaving from the school to the gate.
         if curr_t not in self.num_leaving:
             self.num_leaving[curr_t] = 0
 
         self.num_leaving[curr_t] += num_agents_leaving
+
 
     def vehicle_gen(self, curr_t):
         ''' A function which generates vehicles and adds passengers in them.
@@ -241,14 +237,13 @@ class Gate(object):
             sum_times = self.sum_t_to_gate[time]
 
         # Get the number of students which were captured for that time step.
-        num_times = 0
-        if time in self.num_leaving:
-            num_times = self.num_leaving[time]
-		num_times = self.agents_arrived_at_t(time)
+        num_times = self.agents_arrived_at_t(time)
 
         # If zero, just return the sum.
         if num_times == 0:
             return sum_times
+
+        avg = sum_times / num_times
 
         # Calculate average and return it.
         return avg

@@ -29,7 +29,7 @@ import sys
 import Data
 
 import Constants as C
-import visualize as V
+import Visualize as V
 import matplotlib.pyplot as plt
 
 
@@ -38,7 +38,7 @@ class Model(object):
 
     def __init__(self, dt=0.25, trafficWeight=1):
         """ The default constructor for the Model """
-        
+
         # self.test_agent = Agent.Agent()
         self.trafficWeight = trafficWeight
 
@@ -64,7 +64,7 @@ class Model(object):
         self.utilization = []
 
     def get_time_str(self, curr_t):
-        '''A method which returns the string representation of time based 
+        '''A method which returns the string representation of time based
 			on curr step
 			'''
         hour, min = self.get_time(curr_t)
@@ -77,28 +77,30 @@ class Model(object):
         return hour, min
 
     def curr_stat(self):
-        '''A method which returns the current statistics of the model at the 
+        '''A method which returns the current statistics of the model at the
 			current time step.
 		'''
-        print("\n\nTimestep", self.step, 
+        print("\n\nTimestep", self.step,
 				"**************************************", file=sys.stderr)
-        print("\nTime is", self.get_time_str(self.step), "\n", 
+        print("\nTime is", self.get_time_str(self.step), "\n",
 				file=sys.stderr)
         print(self.gate, file=sys.stderr)
         print(self.campus_way_road, file=sys.stderr)
         print(self.south_garage, file=sys.stderr)
         print(self.school, file=sys.stderr)
-        print("\n***************************************************\n", 
+        print("\n***************************************************\n",
 				file=sys.stderr)
 
-    	
+
     def log(self, str):
-        """ A method that prints a message with associated time step of when it 
+        """ A method that prints a message with associated time step of when it
         was written """
         print(str, " | ", self.step, file=sys.stderr)
 
 
     def run_session(self, day):
+        ''' The main run session of the simulation which grabs data and does
+        simulation for a day. The data is then animated. '''
 
         for self.step in range(Data.get_num_steps()):
             # generate vehicle and agents in vehicle
@@ -114,9 +116,6 @@ class Model(object):
                 if vehicle is not None:
                     # enter road
                     self.campus_way_road.enter_road(vehicle, self.step)
-				else:   #If not parking spots were found.
-                        #Go back to the road to find parking.
-                    self.campus_way_road.reenter_road(cur_vehicle, self.step)
 
                 # enter garage
                 cur_vehicle = self.campus_way_road.arrive_garage(self.step)
@@ -133,9 +132,9 @@ class Model(object):
                         #Remove them from the vehicle.
                         cur_vehicle.agents = set()
 
-                else:   #If not parking spots were found.
-                    #Go back to the road to find parking.
-                    self.campus_way_road.enter_road(cur_vehicle, self.step)
+                    else:   #If not parking spots were found.
+                        #Go back to the road to find parking.
+                        self.campus_way_road.reenter_road(cur_vehicle, self.step)
 
             # checking when is time to leave
             leaving_agent = self.school.leave(self.step)
@@ -147,6 +146,7 @@ class Model(object):
             #Generate a congestion multiplier randomly within the range.
             out_congestion = \
                 N.random.randint(C.ROAD_FLOW_MIN, C.ROAD_FLOW_MAX)
+
             for i in range(out_congestion * self.campus_way_road.lanes_out):
                 # leaving garage
                 cur_vehicle = self.south_garage.leave_garage()
@@ -174,7 +174,7 @@ class Model(object):
 
             else:
                 self.plot_figure, self.plot_axis, self.plot_image = \
-                    V.plot_campus(self, use_obj=(self.plot_figure, 
+                    V.plot_campus(self, use_obj=(self.plot_figure,
 								self.plot_axis, self.plot_image))
 
             #Wait for the animation.
@@ -189,10 +189,22 @@ class Model(object):
 
 
 def main():
+    #Make and run the model.
     model = Model()
+
+    #Run the model for monday.
     model.run_session("Mon")
+
+    #Plot the credits graph.
     V.plot_credits(model)
+
+    #Plot the average graphs.
     V.plot_average(model)
 
-if __name__ is "__main__":
+    #Plot the utilization graph.
+    sigmas = [3, 4, 5, 6]
+    for s in sigmas:
+        V.plot_util(model, sigmas)
+
+if __name__ == "__main__":
     main()
