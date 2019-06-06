@@ -37,14 +37,17 @@ class Agent(object):
         out += "*********************************************"
         return out
 
-    def __init__(self, stayhours = 8, sigma = 5):
-        '''Default constructor which creates the object with the hours 
-		staying'''
+    def __init__(self, curr_t, stayhours = 8, sigma = 5):
+        '''Default constructor which creates the object with the hours staying'''
 
-        global curr_agent_id
 
         #This generate a number of a norm distro with mean 15 and sigma 5
         self.credits = N.floor(sigma * N.random.randn() + 15)
+
+        if (curr_t > 1440/2):
+
+            self.credits = N.floor(sigma * (1 - curr_t / 1440) * N.random.randn() + 15 * (1 - curr_t / 1440))
+
 
         #Set the number of hours the student is staying.
         #C.MIN_NO_DAYS_SCHOOL = 2 (2 days of school in a week)
@@ -63,21 +66,19 @@ class Agent(object):
 
     def time_start(self, curr_time):
         '''Save the current time to calculate waiting times.
-        Will be called once when arrived to gate, and another time 
-		when leaving from school'''
+        Will be called once when arrived to gate, and another time when leaving from school'''
         self.start_time = curr_time
 
     def time_spent(self, curr_time):
         '''Return the time spent since start_time.
-        Will be called once when arrived to school, and another time when 
-		leaving from gate'''
+        Will be called once when arrived to school, and another time when leaving from gate'''
         return curr_time - self.start_time
 
     def time_leaving_school(self, arrival_time):
-        '''A method which returns the time step which the agent is supposed 
-		to leave the school based on the arrival time.'''
+        '''A method which returns the time step which the agent is supposed to
+        leave the school based on the arrival time.'''
         return arrival_time + self.stay_time
-        
+
     def _test_negative_time(self, time):
         self.time_start(time)
         return self.start_time >= 0
