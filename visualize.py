@@ -64,6 +64,10 @@ def plot_credits(modelobj):
 
 
 def plot_util(modelobj, sigmain=5):
+    """
+    This Method plots the utilization percent vs the time over the course of
+    the day
+    """
     times = N.arange(Data.get_num_steps())
     utils = N.array(modelobj.utilization) / modelobj.south_garage.num_spot
 
@@ -78,6 +82,11 @@ def plot_util(modelobj, sigmain=5):
 
 
 def plot_average(modelobj):
+    """
+    This Method grabs the wait times coming into the School and into the Garage,
+    as well as leaving, for each time step. THis function displays them
+    all separately.
+    """
     times = N.arange(Data.get_num_steps())
     total_ticks = 10
     ticks = [0]
@@ -108,7 +117,6 @@ def plot_average(modelobj):
     plt.xticks(ticks, ticks_str)
     plt.ylabel("Average Wait Time")
     plt.savefig("EtM_PS_AWT_GATE_TO_SCHOOL.png", dpi=300)
-    # plt.show()
 
     # Plot Average time to leave campus.
     plt.figure(9)
@@ -117,7 +125,6 @@ def plot_average(modelobj):
     plt.xlabel("Time")
     plt.ylabel("Average Wait Time")
     plt.savefig("EtM_PS_AWT_SCHOOL_TO_GATE.png", dpi=300)
-    # plt.show()
 
     # Plot Average time to find parking.
     plt.figure(10)
@@ -126,7 +133,6 @@ def plot_average(modelobj):
     plt.xlabel("Time")
     plt.ylabel("Number Of Students")
     plt.savefig("EtM_PS_SCHOOL_ARRIVING.png", dpi=300)
-    # plt.show()
 
     # Plot Average time to leave campus.
     plt.figure(11)
@@ -137,10 +143,11 @@ def plot_average(modelobj):
     plt.savefig("EtM_PS_GATE_LEAVING.png", dpi=300)
 
 
-# plt.show()
-
 
 def plot_totals(modelobj):
+    """
+    This method
+    """
     plt.figure(3)
     days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
     time = (N.arange(0, len(Data.table)) * C.TIME_STEP) / 60

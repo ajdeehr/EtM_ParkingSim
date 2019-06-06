@@ -23,11 +23,11 @@ import numpy as N
 import Agent
 
 
-class School(Object):
-	""" The container that all of the agents get placed into after they have 
-		parked. The object stores when they will leave and arrive, placing them
-		into a dictionary and storing the amounts, so that it can be reported 
-		later.
+class School(object):
+    """ The container that all of the agents get placed into after they have 
+	parked. The object stores when they will leave and arrive, placing them
+	into a dictionary and storing the amounts, so that it can be reported 
+	later.
 	"""
 
     def __repr__(self):

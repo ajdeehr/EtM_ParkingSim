@@ -99,8 +99,8 @@ class Gate(object):
             return 0
 
         else:
-            normal_dist_estimated_agent =
-            N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
+            normal_dist_estimated_agent = \
+                    N.floor((no_agent * 0.05) * N.random.randn() + no_agent)
         self.num_vehicles_per_t = normal_dist_estimated_agent
 
     def leave_gate(self):

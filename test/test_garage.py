@@ -1,4 +1,4 @@
-class Tests(object):
-    def test_(self):
-        pass
-        
+# class Tests(object):
+#     def test_init(self):
+#         pass
+#         

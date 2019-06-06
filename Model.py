@@ -34,17 +34,12 @@ import matplotlib.pyplot as plt
 
 
 class Model(object):
-	""" The Central Object in our simulation. """
-	
-	
-    def log(self, str):
-	""" A method that prints a message with associated time step of when it was 
-		written
-	"""
-        print(str, " | ", self.step, file=sys.stderr)
+    """ The Central Object in our simulation. """
 
     def __init__(self, dt=0.25, trafficWeight=1):
-		""" The default constructor for the Model """
+        """ The default constructor for the Model """
+        
+        # self.test_agent = Agent.Agent()
         self.trafficWeight = trafficWeight
 
         self.gate = Gate.Gate()
@@ -95,6 +90,13 @@ class Model(object):
         print(self.school, file=sys.stderr)
         print("\n***************************************************\n", 
 				file=sys.stderr)
+
+    	
+    def log(self, str):
+        """ A method that prints a message with associated time step of when it 
+        was written """
+        print(str, " | ", self.step, file=sys.stderr)
+
 
     def run_session(self, day):
 
@@ -176,23 +178,18 @@ class Model(object):
             plt.pause(.001)
 
 
-    def run_session_plot_out_graphs(self, sigma):
-        V.plot_util(self, sigma)
+    def _run_session_grab_data(self, sigma):
+        model = Model()
+        model.run_session("Mon")
+        print(model.gate.avg_time_to_leave(100))
+        print(model.school.avg_time_to_arrive(100))
 
 
-def main1():
+def main():
     model = Model()
     model.run_session("Mon")
     V.plot_credits(model)
     V.plot_average(model)
 
-
-def main2():
-    model = Model()
-    model.run_session("Mon")
-    print(model.gate.avg_time_to_leave(100))
-    print(model.school.avg_time_to_arrive(100))
-
-
-#main1()
-main1()
+if __name__ is "__main__":
+    main()

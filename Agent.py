@@ -77,3 +77,7 @@ class Agent(object):
         '''A method which returns the time step which the agent is supposed 
 		to leave the school based on the arrival time.'''
         return arrival_time + self.stay_time
+        
+    def _test_negative_time(self, time):
+        self.time_start(time)
+        return self.start_time >= 0
