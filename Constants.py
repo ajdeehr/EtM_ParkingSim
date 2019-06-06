@@ -88,7 +88,7 @@ PLUS_MINUS = 30
 
 #Dataset Constants
 DATA_FOLDER_PATH = Path("data")
-DATA_FILE_NAME = DATA_FOLDER_PATH / "on_campus.csv"
+DATA_FILE_NAME = DATA_FOLDER_PATH / "on_campus_2018.csv"
 DATA_TIME_STEP = 15                     #Data's time step.
 DATA_START_TIME = 0                     #Starting time.
 DATA_MINS_IN_HR = 60                    #Number of minutes in an hr.
