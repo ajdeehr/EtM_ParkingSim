@@ -52,36 +52,63 @@ def plot_util(modelobj, sigmain = 5):
     plt.savefig("EtM_PS_Util_at_S{}.png".format(sigmain), dpi=300)
     plt.show()
 
-    # times = N.arange((int(1440 / C.TIME_STEP)))
-    # util = modelobj.school.agents_arrived_at_t(times)
-    # plt.figure(5)
-    # plt.plot(range(int(1440 / C.TIME_STEP)), util)
-    # plt.title("Number of Students Arriving at Each Time at Sigma {}".format(sigma))
-    # plt.xlabel("Time (Hours)")
-    # plt.ylabel("Number of Students Arriving")
-    # plt.savefig("EtM_PS_Arrivals_at_S{}.png".format(sigma), dpi=300)
-    # plt.show()
-    #
-    #
-    # times = N.arange((int(1440 / C.TIME_STEP)))
-    # leaving = modelobj.gate.num_leaving(times)
-    # plt.figure(8)
-    # plt.plot(range(int(1440 / C.TIME_STEP)), leaving)
-    # plt.title("Number of Students Leaving at Each Time at Sigma {}".format(sigmain))
-    # plt.xlabel("Time (Hours)")
-    # plt.ylabel("Number of Students Leaving")
-    # plt.savefig("EtM_PS_Leaving_at_S{}.png".format(sigmain), dpi=300)
-    # plt.show()
+def plot_average(modelobj):
+
+    times = N.arange(Data.get_num_steps())
+    times_dec = []
+
+    for t in times:
+        hour, min = modelobj.get_time(t)
+        times_dec.append(float(hour) + float(min) / 100.0) #Create a dec version of time.
+
+    #Get average waiting times.
+    school_wait = N.array((times))
+    gate_wait = N.array((times))
+    school_num = N.array((times))
+    gate_num = N.array((times))
+    for i in times:
+        school_wait[i] = modelobj.school.avg_time_to_arrive(i)
+        gate_wait[i] = modelobj.gate.avg_time_to_leave(i)
+        school_num[i] = modelobj.school.agents_arrived_at_t(i)
+        gate_num[i] = modelobj.gate.num_leaving[i]
 
 
 
+    #Plot Average time to find parking.
+    plt.figure(8)
+    #plt.scatter(times_dec, school_wait)    #Regular hours.
+    plt.scatter(times, school_wait)
+    plt.title("Average Waiting Time to find parking (From gate to school)")
+    plt.xlabel("Time (Hour)")
+    plt.ylabel("Average Wait Time")
+    plt.savefig("EtM_PS_AWT_GATE_TO_SCHOOL.png", dpi=300)
 
+    #Plot Average time to leave campus.
+    plt.figure(9)
+    #plt.scatter(times_dec, gate_wait)    #Regular hours.
+    plt.scatter(times, gate_wait)
+    plt.title("Average Waiting Time to leave school (From school to gate)")
+    plt.xlabel("Time (Hour)")
+    plt.ylabel("Average Wait Time")
+    plt.savefig("EtM_PS_AWT_SCHOOL_TO_GATE.png", dpi=300)
 
-    # times = []
-    # plt.figure(4)
-    # for agent in modelobj.gate.agents_list:
-    #     agent.
-    #
+    #Plot Average time to find parking.
+    plt.figure(10)
+    #plt.bar(times_dec, school_num)      #Regular hours.
+    plt.bar(times, school_num)
+    plt.title("Number of students arriving to school")
+    plt.xlabel("Time (Hour)")
+    plt.ylabel("Number Of Students")
+    plt.savefig("EtM_PS_SCHOOL_ARRIVING.png", dpi=300)
+
+    #Plot Average time to leave campus.
+    plt.figure(11)
+    #plt.bar(times_dec, gate_wait)
+    plt.bar(times, gate_wait)
+    plt.title("Number of students leaving school")
+    plt.xlabel("Time (Hour)")
+    plt.ylabel("Number Of Students")
+    plt.savefig("EtM_PS_GATE_LEAVING.png", dpi=300)
 
 
 def plot_totals(modelobj):
@@ -123,15 +150,13 @@ def plot_times(modelobj):
     plt.savefig("EtM_PS_Avg_Arrival.png", dpi=300)
 
 
-
-
 def plot_campus(modelobj, use_obj=None):
     global t
 
     garage_size = int((N.ceil(modelobj.south_garage.num_spot / modelobj.south_garage.garage_width)) * modelobj.south_garage.garage_width)
 
-    cmap_garage = ['b', 'g', 'c','y', 'r', 'k', '0.0']
-    cmap_road = ['y', 'c', 'b', 'g', 'r', 'k', '0.8']
+    cmap_garage = ['red', 'brown', 'yellow', 'blue', 'green', 'k', '0.0']
+    cmap_road = ['red', 'brown', 'yellow', 'blue', 'green', 'k', '0.8']
 
     if use_obj == None:
         fig = plt.figure(figsize=(6,6))
@@ -171,9 +196,7 @@ def plot_campus(modelobj, use_obj=None):
         it = 0
 
         for dict_type in C.VEHICLE_TYPES.keys():
-            print(dict_type)
             for spot in modelobj.south_garage.spot_dict[C.VEHICLE_TYPES[dict_type]].values():
-                print(spot)
                 temp = N.array(convert.to_rgb(cmap_garage[spot.get_parking_type()]))
                 data[it, :] = temp[:]
                 it = it + 1

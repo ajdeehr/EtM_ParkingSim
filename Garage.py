@@ -67,7 +67,7 @@ class Garage(object):
 
     def __init__(self, garage_name="Garage1", num_spot=771,
                  num_carpool_spot=23, num_handicapped_spot=20,
-                 num_bike_spot=12, garage_width = 31):
+                 num_bike_spot=12, garage_width=31):
         self.garage_name = garage_name
         self.num_spot = num_spot
 

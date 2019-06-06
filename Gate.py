@@ -47,7 +47,7 @@ class Gate(object):
 
         self.total_vehicles_left = 0
         self.total_agents_left = 0
-        
+
         self.num_agents_per_t_list = []
         self.num_vehicle_per_t_list = []
 
@@ -99,8 +99,10 @@ class Gate(object):
                 num_agents_leaving += 1
                 sum_time_to_leave += agent.time_spent(curr_t)
 
-            #Keep track of total agents and vehicles that left.
-            self.total_agents_left += num_agents_leaving
+                #Increase the total agents left.
+                self.total_agents_left += 1
+
+            #Increase the total vehicles left.
             self.total_vehicles_left += 1
 
         #Reset the going out queue.
@@ -138,7 +140,7 @@ class Gate(object):
             if curr_vehicle.is_single_passenger():
 
                 #make a a new agent
-                agent = Agent.Agent()
+                agent = Agent.Agent(curr_t)
 
                 #record time_start
                 agent.time_start(curr_t)
@@ -160,7 +162,7 @@ class Gate(object):
             else:   #Add multiple passengers to vehicle if not standard vehicle.
                 for j in range(rand.randint(C.MIN_PASSENGERS, C.MAX_PASSENGERS)):
                     #make a a new agent
-                    agent = Agent.Agent()
+                    agent = Agent.Agent(curr_t)
 
                     #record time_start
                     agent.time_start(curr_t)
@@ -185,7 +187,7 @@ class Gate(object):
             self.q_going_in.put(curr_vehicle)
             total_vehicle += 1
 
-            
+
         self.num_agents_per_t = total_agent
         self.num_agents_per_t_list.append((total_agent, curr_t))
         self.num_vehicle_per_t = total_vehicle
@@ -201,16 +203,14 @@ class Gate(object):
             sum_times = self.sum_t_to_gate[time]
 
         #Get the number of students which were captured for that time step.
-        num_times = 0
-        if time in self.num_leaving:
-            num_times = self.num_leaving[time]
+        num_times = self.agents_arrived_at_t(time)
 
         #If zero, just return the sum.
         if num_times == 0:
             return sum_times
 
         #Calculate average and return it.
-        return sum_times / num_times
+        return avg
 
 
     def agents_arrived_at_t(self, time):

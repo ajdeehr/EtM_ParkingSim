@@ -1,0 +1,5 @@
+*.png
+*.csv
+./Data/*.csv
+./Data/*.xlsm
+./Data/*.csv.old
