@@ -1,14 +1,34 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 2 Jun 2019:  Original by Ardalan Ahanchi, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Adam Deehring, and Dewey Nguyen
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
+
+#---------------- Module General Import and Declarations ----------------------
+
 import random as rand
 import Constants as C
 import numpy as N
 
 import Agent
 
-# =======
-# Ardalan Ahanchi
-# June 2, 2019
 
-class School:
+class School(object):
+    """ The container that all of the agents get placed into after they have 
+	parked. The object stores when they will leave and arrive, placing them
+	into a dictionary and storing the amounts, so that it can be reported 
+	later.
+	"""
 
     def __repr__(self):
         return self.__str__()
@@ -21,12 +41,14 @@ class School:
             num_agents_in_school += len(self.agents_in_school[timestep])
 
         out = "School: Dump *****************************" + "\n"
-        out += "School: Number of agents in school == " + str(num_agents_in_school) + "\n"
+        out += "School: Number of agents in school == " + \
+               str(num_agents_in_school) + "\n"
         out += "******************************************"
         return out
 
     def __init__(self):
-        ''' A simple default constructor to initialize the school dictionaries '''
+        ''' A simple default constructor to initialize the school dictionaries 
+		'''
 
         #Key == time_step_to_leave , Value = list of Agents
         self.agents_in_school = {}
@@ -40,9 +62,9 @@ class School:
 
 
     def arrived(self, agent, curr_t):
-        ''' A method which is called when the agent arrives to school, it adds the
-        agent to the dictionary, it also calculates the time spent from entrace
-        to arrival (Time on campus roads). '''
+        ''' A method which is called when the agent arrives to school, it adds 
+		the agent to the dictionary, it also calculates the time spent from 
+		enterance to arrival (Time on campus roads). '''
 
         #Calculate the time leaving, and add to the agents_in_school dict.
         leaving_time = agent.time_leaving_school(curr_t)
@@ -62,7 +84,8 @@ class School:
         if curr_t not in self.num_arrived:
             self.num_arrived[curr_t] = 0
 
-        #Add the time spent from gate to overall time for that arriving time step.
+        #Add the time spent from gate to overall time for that arriving time 
+		#step.
         self.sum_t_to_school[curr_t] += agent.time_spent(curr_t)
 
         #Increase the number of students arrived at that time step.
@@ -70,8 +93,9 @@ class School:
 
 
     def leave(self, curr_t):
-        ''' A method which returns the agent which is ready to leave in the current
-        time step. If no agent is ready, it just returns None '''
+        ''' A method which returns the agent which is ready to leave in the 
+		current time step. If no agent is ready, it just returns None 
+		'''
 
         #If none of the agents_in_school are ready to leave (Since key of the
         #dict is time_step_to_leave) just return None.
@@ -83,17 +107,20 @@ class School:
         #Pop the agent to return from the list.
         leaving_agent = self.agents_in_school[curr_t].pop(0)
 
-        #Begin the capture of time for this agent (So we can check the time_spent
-        #Again in the exit gate), and then return it.
+        #Begin the capture of time for this agent (So we can check the
+        # time_spent again in the exit gate), and then return it.
         leaving_agent.time_start(curr_t)
         return leaving_agent
 
 
     def avg_time_to_arrive(self, time):
-        ''' A method which returns the average time it took (In terms of timesteps)
-        for the students to arrive to the school at the given time. '''
+        ''' A method which returns the average time it took 
+		(In terms of timesteps) for the students to arrive to the school at 
+		the given time. 
+		'''
 
-        #Get the sum of times it took students to arrive to school at given time.
+        #Get the sum of times it took students to arrive to school at
+        # given time.
         sum_times = 0
         if time in self.sum_t_to_school:
             sum_times = self.sum_t_to_school[time]
@@ -112,7 +139,8 @@ class School:
 
 
     def agents_arrived_at_t(self, time):
-        ''' A method which returns the number of agents which arrived at time. '''
+        ''' A method which returns the number of agents which arrived at time. 
+		'''
 
         #If no agent has been recorded on that time, just return 0.
         if time not in self.num_arrived:

@@ -1,3 +1,21 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 23 May 2019:  Original by Dewey Nguyen, CSS458 A,
+#   University of Washington Bothell.
+# - Subsequent Revisions from Xavier Cheng, Ardalan Ahanchi, 
+#   and Adam Deehring
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
+
+#---------------- Module General Import and Declarations ----------------------
 import os       #For platform independent path.
 
 #Student data from PDF
@@ -32,9 +50,11 @@ TOTAL_CAR = TOTAL_STUDENT_CAR + FACULTY_AVG + STAFF_AVG
 # Variables For the Vehicle Class.
 PERCENT_BIKE = 0.05  # The probablitiy of generating bike instead of a car.
 PERCENT_HCAP = 0.05  # Probability of the Car to belong to a disabled person.
-#PERCENT_CARPOOL = 0.05  # Probability of the Car having more than One passenger.
+#PERCENT_CARPOOL = 0.05  # Probability of the Car having more than 
+						 # One passenger.
 #(8217+7731)/2 = 7974, (0.136+0.088)/2 = 0.113
-PERCENT_CARPOOL = 0.113  # Probability of the Car having more than One passenger.
+PERCENT_CARPOOL = 0.113  # Probability of the Car having more than 
+						 # One passenger.
 
 VEHICLE_TYPE_CAR = 0  # Represent the types of the vehicle.
 VEHICLE_TYPE_BIKE = 1
@@ -47,9 +67,10 @@ STATE_MOVING = 0  # Current state of the vehicle in the simulation.
 STATE_PARKED = 1
 STATE_LEFT = 2
 
-ROAD_FLOW_MIN = 5           #Minimum number of vehicles who enter or leave in a t.
-ROAD_FLOW_MAX = 10          #Maximum number of vehicles who enter or leave in a t.
-
+ROAD_FLOW_MIN = 5           #Minimum number of vehicles who enter or leave 
+							# in a t.
+ROAD_FLOW_MAX = 10          #Maximum number of vehicles who eenter or leave 
+							# in a t.
 # Variables for the Agent class.
 AGENT_STUDENT = 0
 AGENT_FACULTY = 1
