@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+#==============================================================================
+#                        General Documentation
+"""
+"""
+#------------------------------------------------------------------------------
+#                       Additional Documentation
+# Modification History:
+# - 24 May 2019:  Original by Adam Deehring, CSS458 A,
+#   University of Washington Bothell.
+#
+# Notes:
+# - Written for Python 3.5.2.
+#==============================================================================
+
+#---------------- Module General Import and Declarations ----------------------
 import os
 if (__name__ == '__main__') and (__package__ is None):
     filename = os.path.abspath(__file__)
@@ -10,8 +26,6 @@ if (__name__ == '__main__') and (__package__ is None):
 import unittest
 from EtM_ParkingSim import Agent
 from EtM_ParkingSim import Model
-from EtM_ParkingSim import Garage
-# import test_garage
 import test_agent
 import test_visualize
 import test_pkg_init
@@ -33,7 +47,6 @@ class Tests(object):
 
 
 class setUpTestTests(SetUpTest, Tests): pass
-# class GarageTests(SetUpTest, test_garage.Tests): pass
 class AgentTest(SetUpTest, test_agent.Tests): pass
 class ModelTest(SetUpTest, test_model.Tests): pass
 class VisualizeTest(SetUpTest, test_visualize.Tests): pass
@@ -46,7 +59,6 @@ if __name__ == "__main__":
     run_verbose = False
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(setUpTestTests))
-    # suite.addtest(unittest.makeSuite(GarageTests))
     suite.addTest(unittest.makeSuite(AgentTest))
     suite.addTest(unittest.makeSuite(ModelTest))
     suite.addTest(unittest.makeSuite(VisualizeTest))
