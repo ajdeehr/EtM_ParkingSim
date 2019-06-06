@@ -305,7 +305,7 @@ def scraping(year):
             else:
                 continue
                 
-    on_campus = (on_campus*(C.DRIVE_ALONE_AVG + C.CARPOOL_AVG) * 774/2020 * (r.normal(0,0.5))).astype(int)
+    on_campus = (on_campus*(C.DRIVE_ALONE_AVG + C.CARPOOL_AVG) * 774/2020 * (r.uniform(0.25,0.5))).astype(int)
  
     # Output the 2D array as a CSV file
     with open("on_campus.csv","w+") as my_csv:
