@@ -50,7 +50,9 @@
 #
 #   3. "visualization" directory includes all the graphs and figures we created.
 #
-#   4. All the other files are the source code of the program:
+#   4. "Simulation_Report.pdf" file is the report which analyzes the simulation.
+#
+#   5. All the other files are the source code of the program:
 #
 #       * Agent.py > represents a person (Student, Teacher, etc.)
 #       * Constants.py > all the simulation variables and constants.
