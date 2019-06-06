@@ -40,10 +40,6 @@ class Agent(object):
     def __init__(self, curr_t, stayhours = 8, sigma = 5):
         '''Default constructor which creates the object with the hours staying'''
 
-
-        #This generate a number of a norm distro with mean 15 and sigma 5
-        self.credits = N.floor(sigma * N.random.randn() + 15)
-
         if (curr_t > 1440/2):
 
             self.credits = N.floor(sigma * (1 - curr_t / 1440) * N.random.randn() + 15 * (1 - curr_t / 1440))
